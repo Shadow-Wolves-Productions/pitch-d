@@ -101,24 +101,159 @@
 
 /* Print styles */
 @media print {
-  @page {
-    margin: 0;
-    size: A4;
-  }
-  body {
-    background: #ffffff !important;
-    color: #000 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-  .no-print {
-    display: none !important;
-  }
-  .print-only {
-    display: block !important;
+  @page { margin: 0; size: A4; }
+  body * { visibility: hidden !important; }
+  .print-sheet, .print-sheet * { visibility: visible !important; }
+  .print-sheet {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 99999 !important;
   }
 }
 
-.print-only {
+.print-sheet {
   display: none;
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  z-index: 9999;
+  overflow: hidden;
+  flex-direction: column;
+}
+
+.print-sheet.show {
+  display: flex;
+}
+
+.ps-header {
+  background: #0d9488;
+  padding: 32px 48px 28px;
+  flex-shrink: 0;
+}
+
+.ps-logo-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 28px;
+}
+
+.ps-logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 36px;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+
+.ps-logo em {
+  font-style: normal;
+  color: rgba(255,255,255,0.45);
+}
+
+.ps-brand {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.ps-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.75);
+  padding: 4px 12px;
+}
+
+.ps-film-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.ps-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 80px;
+  color: #fff;
+  letter-spacing: 0.03em;
+  line-height: 1;
+}
+
+.ps-body {
+  flex: 1;
+  padding: 36px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.ps-section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: #0d9488;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ps-section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(13,148,136,0.2);
+}
+
+.ps-logline {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  color: #374151;
+  line-height: 1.65;
+}
+
+.ps-tagline {
+  font-family: 'DM Mono', monospace;
+  font-size: 16px;
+  font-style: italic;
+  color: #0d9488;
+}
+
+.ps-synopsis {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  color: #374151;
+  line-height: 1.75;
+  border-left: 3px solid #0d9488;
+  padding-left: 16px;
+}
+
+.ps-footer {
+  background: #0d9488;
+  padding: 14px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.ps-footer-text {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
 }

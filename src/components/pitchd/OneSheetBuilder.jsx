@@ -24,6 +24,7 @@ export default function OneSheetBuilder({ data, onReset }) {
 
   const [locked, setLocked] = useState(false);
   const [showPromo, setShowPromo] = useState(false);
+  const [showPrintSheet, setShowPrintSheet] = useState(false);
 
   const completed = [
     selectedTitle !== null,
@@ -57,8 +58,14 @@ export default function OneSheetBuilder({ data, onReset }) {
   const handleUnlock = () => setLocked(false);
 
   const handleExport = () => {
-    window.print();
-    setTimeout(() => setShowPromo(true), 800);
+    setShowPrintSheet(true);
+    setTimeout(() => {
+      window.print();
+      setTimeout(() => {
+        setShowPrintSheet(false);
+        setShowPromo(true);
+      }, 500);
+    }, 50);
   };
 
   const finalTitle = selectedTitle !== null ? editTitle : '';
@@ -68,12 +75,12 @@ export default function OneSheetBuilder({ data, onReset }) {
 
   return (
     <>
-      {/* Print-only one sheet — hidden on screen */}
       <PrintSheet
         title={finalTitle}
         logline={finalLogline}
         tagline={finalTagline}
         synopsis={finalSynopsis}
+        visible={showPrintSheet}
       />
 
       {/* Screen UI */}
