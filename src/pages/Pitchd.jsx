@@ -3,12 +3,9 @@ import { base44 } from '@/api/base44Client';
 import Header from '@/components/pitchd/Header';
 import StepIndicator from '@/components/pitchd/StepIndicator';
 import ScriptInput from '@/components/pitchd/ScriptInput';
-import Results from '@/components/pitchd/Results';
-import ActionBar from '@/components/pitchd/ActionBar';
-import CrossPromo from '@/components/pitchd/CrossPromo';
+import OneSheetBuilder from '@/components/pitchd/OneSheetBuilder';
 import Footer from '@/components/pitchd/Footer';
 import { SYSTEM_PROMPT, RESPONSE_SCHEMA } from '@/lib/pitchdPrompt';
-import { downloadTxt } from '@/lib/pitchdExport';
 
 const MAX_CHARS = 325000;
 
@@ -17,7 +14,7 @@ export default function Pitchd() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
-  const resultsRef = useRef(null);
+  const builderRef = useRef(null);
 
   const step = result ? 3 : loading ? 2 : 1;
 
@@ -40,8 +37,8 @@ export default function Pitchd() {
   };
 
   useEffect(() => {
-    if (result && resultsRef.current) {
-      resultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (result && builderRef.current) {
+      builderRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, [result]);
 
@@ -51,9 +48,6 @@ export default function Pitchd() {
     setText('');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  const handleExport = () => downloadTxt(result);
-  const handlePrint = () => window.print();
 
   return (
     <div className="min-h-screen" style={{ background: '#faf8f5' }}>
@@ -80,14 +74,8 @@ export default function Pitchd() {
         )}
 
         {result && (
-          <div ref={resultsRef} className="mt-4">
-            <ActionBar
-              onReset={handleReset}
-              onExport={handleExport}
-              onPrint={handlePrint}
-            />
-            <Results data={result} />
-            <CrossPromo />
+          <div ref={builderRef} className="mt-6 mb-16">
+            <OneSheetBuilder data={result} onReset={handleReset} />
           </div>
         )}
 
