@@ -1,7 +1,12 @@
 import React from 'react';
 
-export default function PrintSheet({ title, logline, tagline, synopsis, visible }) {
+export default function PrintSheet({ title, logline, tagline, synopsis, genre, tone, setting, time_period, subgenres = [], visible }) {
   if (!visible) return null;
+
+  const metaPills = [
+    genre && genre,
+    ...(subgenres || []),
+  ].filter(Boolean);
 
   return (
     <div
@@ -24,10 +29,10 @@ export default function PrintSheet({ title, logline, tagline, synopsis, visible 
           <div>
             <div style={{
               fontFamily: "'Bebas Neue', sans-serif",
-              fontWeight: 800,
+              fontWeight: 400,
               fontSize: '36px',
               color: '#ffffff',
-              letterSpacing: '-0.02em',
+              letterSpacing: '0.02em',
               lineHeight: 1,
             }}>
               PITCH<span style={{ color: 'rgba(255,255,255,0.45)' }}>'D</span>
@@ -75,10 +80,66 @@ export default function PrintSheet({ title, logline, tagline, synopsis, visible 
         }}>
           {title}
         </div>
+
+        {/* Genre / Tone pills in header */}
+        {(genre || tone) && (
+          <div style={{ display: 'flex', gap: '8px', marginTop: '14px', flexWrap: 'wrap' }}>
+            {metaPills.map((pill, i) => (
+              <span key={i} style={{
+                fontFamily: "'DM Mono', monospace",
+                fontSize: '9px',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                color: 'rgba(255,255,255,0.85)',
+                background: 'rgba(255,255,255,0.15)',
+                padding: '3px 10px',
+                borderRadius: '3px',
+              }}>
+                {pill}
+              </span>
+            ))}
+            {tone && (
+              <span style={{
+                fontFamily: "'DM Mono', monospace",
+                fontSize: '9px',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                color: 'rgba(255,255,255,0.85)',
+                background: 'rgba(255,255,255,0.15)',
+                padding: '3px 10px',
+                borderRadius: '3px',
+              }}>
+                {tone}
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       {/* WHITE BODY */}
-      <div style={{ flex: 1, padding: '40px 56px', display: 'flex', flexDirection: 'column', gap: '32px', overflow: 'hidden' }}>
+      <div style={{ flex: 1, padding: '36px 56px', display: 'flex', flexDirection: 'column', gap: '24px', overflow: 'hidden' }}>
+
+        {/* Setting / Time Period line */}
+        {(setting || time_period) && (
+          <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+            {setting && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: '9px', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#0d9488' }}>
+                  Setting
+                </span>
+                <span style={{ fontSize: '14px', color: '#374151' }}>{setting}</span>
+              </div>
+            )}
+            {time_period && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: '9px', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#0d9488' }}>
+                  Period
+                </span>
+                <span style={{ fontSize: '14px', color: '#374151' }}>{time_period}</span>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* LOGLINE */}
         <div>
@@ -88,7 +149,7 @@ export default function PrintSheet({ title, logline, tagline, synopsis, visible 
             letterSpacing: '0.35em',
             textTransform: 'uppercase',
             color: '#0d9488',
-            marginBottom: '12px',
+            marginBottom: '10px',
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
@@ -96,7 +157,7 @@ export default function PrintSheet({ title, logline, tagline, synopsis, visible 
             Logline
             <span style={{ flex: 1, height: '1px', background: 'rgba(13,148,136,0.2)' }} />
           </div>
-          <p style={{ fontSize: '16px', color: '#374151', lineHeight: 1.65 }}>{logline}</p>
+          <p style={{ fontSize: '15px', color: '#374151', lineHeight: 1.65 }}>{logline}</p>
         </div>
 
         {/* TAGLINE */}
@@ -107,7 +168,7 @@ export default function PrintSheet({ title, logline, tagline, synopsis, visible 
             letterSpacing: '0.35em',
             textTransform: 'uppercase',
             color: '#0d9488',
-            marginBottom: '12px',
+            marginBottom: '10px',
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
@@ -117,7 +178,7 @@ export default function PrintSheet({ title, logline, tagline, synopsis, visible 
           </div>
           <p style={{
             fontFamily: "'DM Mono', monospace",
-            fontSize: '18px',
+            fontSize: '17px',
             fontStyle: 'italic',
             color: '#0d9488',
           }}>"{tagline}"</p>
@@ -131,7 +192,7 @@ export default function PrintSheet({ title, logline, tagline, synopsis, visible 
             letterSpacing: '0.35em',
             textTransform: 'uppercase',
             color: '#0d9488',
-            marginBottom: '12px',
+            marginBottom: '10px',
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
@@ -140,7 +201,7 @@ export default function PrintSheet({ title, logline, tagline, synopsis, visible 
             <span style={{ flex: 1, height: '1px', background: 'rgba(13,148,136,0.2)' }} />
           </div>
           <p style={{
-            fontSize: '14px',
+            fontSize: '13px',
             color: '#374151',
             lineHeight: 1.75,
             borderLeft: '3px solid #0d9488',
@@ -161,10 +222,10 @@ export default function PrintSheet({ title, logline, tagline, synopsis, visible 
         flexShrink: 0,
       }}>
         <div style={{ fontFamily: "'DM Mono', monospace", fontSize: '8px', color: 'rgba(255,255,255,0.55)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
-          PITCH'D © Shadow Wolves Productions
+          PITCH'D &copy; Shadow Wolves Productions
         </div>
         <div style={{ fontFamily: "'DM Mono', monospace", fontSize: '8px', color: 'rgba(255,255,255,0.55)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>
-          Session Only · Nothing Saved
+          Session Only &middot; Nothing Saved
         </div>
       </div>
     </div>

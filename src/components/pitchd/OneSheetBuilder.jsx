@@ -7,8 +7,24 @@ import PromoModal from './onesheet/PromoModal';
 import PrintSheet from './onesheet/PrintSheet';
 import SectionLabel from './SectionLabel';
 
+function triggerDownload(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 export default function OneSheetBuilder({ data, onReset }) {
-  const { primaryTitle, altTitles = [], loglines = [], taglines = [], synopsis: rawSynopsis = '' } = data;
+  const {
+    primaryTitle, altTitles = [], loglines = [], taglines = [],
+    synopsis: rawSynopsis = '', genre = '', subgenres = [],
+    tone = '', time_period = '', setting = '',
+  } = data;
   const allTitles = [primaryTitle, ...altTitles];
 
   const [selectedTitle, setSelectedTitle] = useState(null);
@@ -55,7 +71,7 @@ export default function OneSheetBuilder({ data, onReset }) {
     setExporting(true);
     setShowPrintSheet(true);
 
-    // Wait for print sheet to render in the DOM
+    // Wait for print sheet to render
     await new Promise((r) => setTimeout(r, 600));
 
     try {
@@ -80,14 +96,19 @@ export default function OneSheetBuilder({ data, onReset }) {
         .replace(/\s+/g, '_')
         .toUpperCase()
         .slice(0, 40);
-      pdf.save(`PITCHD_${safeTitle}_OneSheet.pdf`);
-    } catch (err) {
-      console.error('PDF export failed:', err);
-      alert('PDF export failed — please try again.');
-    } finally {
+
+      // Manual blob download — more reliable than pdf.save() in jsPDF v4
+      const blob = pdf.output('blob');
+      triggerDownload(blob, `PITCHD_${safeTitle}_OneSheet.pdf`);
+
       setShowPrintSheet(false);
       setExporting(false);
       setShowPromo(true);
+    } catch (err) {
+      console.error('PDF export failed:', err);
+      setShowPrintSheet(false);
+      setExporting(false);
+      alert('PDF export failed — please try again.');
     }
   };
 
@@ -106,6 +127,16 @@ export default function OneSheetBuilder({ data, onReset }) {
     setExporting(false);
   };
 
+  // Metadata pills
+  const metaItems = [
+    genre && { label: 'Genre', value: genre },
+    tone && { label: 'Tone', value: tone },
+    setting && { label: 'Setting', value: setting },
+    time_period && { label: 'Period', value: time_period },
+  ].filter(Boolean);
+
+  const subgenreList = subgenres.filter(Boolean);
+
   return (
     <>
       <PrintSheet
@@ -113,6 +144,11 @@ export default function OneSheetBuilder({ data, onReset }) {
         logline={editLogline}
         tagline={editTagline}
         synopsis={editSynopsis}
+        genre={genre}
+        tone={tone}
+        setting={setting}
+        time_period={time_period}
+        subgenres={subgenreList}
         visible={showPrintSheet}
       />
 
@@ -144,6 +180,62 @@ export default function OneSheetBuilder({ data, onReset }) {
           </button>
         </div>
 
+        {/* GENRE / TONE / SETTING METADATA */}
+        {metaItems.length > 0 && (
+          <div
+            className="rounded-lg p-4"
+            style={{ background: 'rgba(13,148,136,0.05)', border: '1px solid rgba(13,148,136,0.15)' }}
+          >
+            <div className="flex flex-wrap gap-3">
+              {metaItems.map((item) => (
+                <div key={item.label} className="flex items-center gap-2">
+                  <span
+                    className="font-mono-dm uppercase"
+                    style={{ fontSize: '9px', letterSpacing: '0.15em', color: '#0d9488' }}
+                  >
+                    {item.label}
+                  </span>
+                  <span
+                    className="font-grotesk px-2.5 py-1 rounded-md"
+                    style={{
+                      fontSize: '13px',
+                      color: '#1a1a1a',
+                      background: '#ffffff',
+                      border: '1px solid #e8e0d8',
+                    }}
+                  >
+                    {item.value}
+                  </span>
+                </div>
+              ))}
+            </div>
+            {subgenreList.length > 0 && (
+              <div className="flex items-center gap-2 mt-3">
+                <span
+                  className="font-mono-dm uppercase"
+                  style={{ fontSize: '9px', letterSpacing: '0.15em', color: '#0d9488' }}
+                >
+                  Subgenres
+                </span>
+                {subgenreList.map((sg, i) => (
+                  <span
+                    key={i}
+                    className="font-grotesk px-2 py-0.5 rounded-full"
+                    style={{
+                      fontSize: '12px',
+                      color: '#0d9488',
+                      background: 'rgba(13,148,136,0.08)',
+                      border: '1px solid rgba(13,148,136,0.2)',
+                    }}
+                  >
+                    {sg}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* LOCKED BANNER */}
         {locked && (
           <div
@@ -153,7 +245,7 @@ export default function OneSheetBuilder({ data, onReset }) {
             <div className="flex items-center gap-3">
               <CheckCircle size={18} color="#ffffff" />
               <span className="font-syne font-bold" style={{ fontSize: '15px', color: '#ffffff' }}>
-                ✓ Locked and ready to export
+                Locked and ready to export
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -184,7 +276,7 @@ export default function OneSheetBuilder({ data, onReset }) {
                 }}
               >
                 <Download size={13} />
-                {exporting ? 'Exporting…' : '↓ Export Again'}
+                {exporting ? 'Exporting…' : 'Export Again'}
               </button>
             </div>
           </div>
@@ -311,11 +403,12 @@ export default function OneSheetBuilder({ data, onReset }) {
           </div>
         </section>
 
-        {/* LOCK & EXPORT — single button, only when unlocked */}
+        {/* LOCK & EXPORT */}
         {!locked && (
           <button
             onClick={handleLockAndExport}
             disabled={!allDone}
+            data-testid="lock-export-btn"
             className="w-full font-syne font-extrabold uppercase flex items-center justify-center gap-2 py-4 rounded-lg transition-all"
             style={{
               fontSize: '16px',
