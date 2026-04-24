@@ -75,8 +75,8 @@ export default function PromoModal({ onClose }) {
 
         <div className="grid grid-cols-2 gap-3 mb-6">
           {[
-            { name: 'SLATR', tagline: 'Production pipeline', href: 'https://slatr.app' },
-            { name: "SPOT'D", tagline: 'Casting & auditions', href: 'https://spotted.app' },
+            { name: 'SLATR', tagline: 'Production pipeline', href: 'https://www.slatr.com.au' },
+            { name: "SPOT'D", tagline: 'Casting & auditions', href: 'https://www.getspotd.app' },
           ].map((p) => (
             <a
               key={p.name}

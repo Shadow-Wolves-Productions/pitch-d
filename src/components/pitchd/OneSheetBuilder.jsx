@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { RotateCcw, Lock, Download, Unlock, CheckCircle } from 'lucide-react';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 import SelectableCard from './onesheet/SelectableCard';
 import PromoModal from './onesheet/PromoModal';
 import PrintSheet from './onesheet/PrintSheet';
@@ -49,50 +51,44 @@ export default function OneSheetBuilder({ data, onReset }) {
     setEditTagline(taglines[i]);
   };
 
-  const loadScript = (src) =>
-    new Promise((resolve, reject) => {
-      if (document.querySelector(`script[src="${src}"]`)) return resolve();
-      const s = document.createElement('script');
-      s.src = src;
-      s.onload = resolve;
-      s.onerror = reject;
-      document.head.appendChild(s);
-    });
-
   const exportPdf = async () => {
     setExporting(true);
     setShowPrintSheet(true);
 
-    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
-    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+    // Wait for print sheet to render in the DOM
+    await new Promise((r) => setTimeout(r, 600));
 
-    // Wait for the print sheet to render
-    await new Promise((r) => setTimeout(r, 400));
+    try {
+      const el = document.getElementById('printSheet');
+      if (!el) throw new Error('Print sheet not found');
 
-    const el = document.getElementById('printSheet');
-    const canvas = await window.html2canvas(el, {
-      scale: 2,
-      backgroundColor: '#ffffff',
-      useCORS: true,
-    });
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        backgroundColor: '#ffffff',
+        useCORS: true,
+        logging: false,
+      });
 
-    const imgData = canvas.toDataURL('image/png');
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-    const pdfW = pdf.internal.pageSize.getWidth();
-    const pdfH = pdf.internal.pageSize.getHeight();
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfW, pdfH);
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const pdfW = pdf.internal.pageSize.getWidth();
+      const pdfH = pdf.internal.pageSize.getHeight();
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfW, pdfH);
 
-    const safeTitle = (editTitle || 'Pitch')
-      .replace(/[^a-zA-Z0-9 ]/g, '')
-      .replace(/\s+/g, '_')
-      .toUpperCase()
-      .slice(0, 40);
-    pdf.save(`PITCHD_${safeTitle}_OneSheet.pdf`);
-
-    setShowPrintSheet(false);
-    setExporting(false);
-    setShowPromo(true);
+      const safeTitle = (editTitle || 'Pitch')
+        .replace(/[^a-zA-Z0-9 ]/g, '')
+        .replace(/\s+/g, '_')
+        .toUpperCase()
+        .slice(0, 40);
+      pdf.save(`PITCHD_${safeTitle}_OneSheet.pdf`);
+    } catch (err) {
+      console.error('PDF export failed:', err);
+      alert('PDF export failed — please try again.');
+    } finally {
+      setShowPrintSheet(false);
+      setExporting(false);
+      setShowPromo(true);
+    }
   };
 
   const handleLockAndExport = async () => {

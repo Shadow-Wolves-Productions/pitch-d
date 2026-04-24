@@ -91,12 +91,12 @@ export default function CrossPromo() {
         <ProductCard
           name="SLATR"
           tagline="Production pipeline for indie teams."
-          href="https://slatr.app"
+          href="https://www.slatr.com.au"
         />
         <ProductCard
           name="SPOT'D"
           tagline="Casting &amp; auditions, done right."
-          href="https://spotted.app"
+          href="https://www.getspotd.app"
         />
       </div>
 
