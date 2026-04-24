@@ -1,0 +1,293 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 36 33% 97%;           /* #faf8f5 */
+    --foreground: 0 0% 10%;             /* #1a1a1a */
+    --card: 0 0% 100%;                  /* #ffffff */
+    --card-foreground: 0 0% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 174 84% 32%;             /* #0d9488 teal */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 36 25% 94%;
+    --secondary-foreground: 0 0% 10%;
+    --muted: 36 25% 96%;
+    --muted-foreground: 220 9% 46%;     /* #6b7280 */
+    --accent: 174 84% 32%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 30 25% 88%;               /* #e8e0d8 */
+    --input: 30 25% 88%;
+    --ring: 174 84% 32%;
+    --radius: 0.5rem;
+
+    --pitchd-bg: #faf8f5;
+    --pitchd-surface: #ffffff;
+    --pitchd-teal: #0d9488;
+    --pitchd-teal-light: rgba(13, 148, 136, 0.08);
+    --pitchd-teal-border: rgba(13, 148, 136, 0.25);
+    --pitchd-text: #1a1a1a;
+    --pitchd-text-secondary: #6b7280;
+    --pitchd-text-muted: #9ca3af;
+    --pitchd-border: #e8e0d8;
+    --pitchd-divider: #f0ebe4;
+
+    --font-syne: 'Syne', sans-serif;
+    --font-grotesk: 'Space Grotesk', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --font-marker: 'Permanent Marker', cursive;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    background-color: var(--pitchd-bg);
+    color: var(--pitchd-text);
+    font-family: var(--font-grotesk);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer utilities {
+  .font-syne { font-family: var(--font-syne); }
+  .font-grotesk { font-family: var(--font-grotesk); }
+  .font-mono-dm { font-family: var(--font-mono); }
+  .font-marker { font-family: var(--font-marker); }
+
+  .pitchd-card {
+    background: var(--pitchd-surface);
+    border: 1px solid var(--pitchd-border);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  .pitchd-divider {
+    height: 1px;
+    background: var(--pitchd-teal);
+    opacity: 0.25;
+  }
+}
+
+/* Film strip loading animation */
+@keyframes filmstrip {
+  0% { background-position: 0 0; }
+  100% { background-position: 32px 0; }
+}
+
+.film-strip-loader {
+  height: 18px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    #0d9488 0 4px,
+    #0d9488 4px 12px,
+    transparent 12px 16px,
+    #0d9488 16px 20px,
+    transparent 20px 24px,
+    #0d9488 24px 32px
+  );
+  background-size: 32px 100%;
+  animation: filmstrip 0.8s linear infinite;
+  border-radius: 3px;
+  opacity: 0.85;
+}
+
+/* Print styles */
+@media print {
+  @page { margin: 0; size: A4; }
+  body * { visibility: hidden !important; }
+  .print-sheet, .print-sheet * { visibility: visible !important; }
+  .print-sheet {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 99999 !important;
+  }
+}
+
+.print-sheet {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  z-index: 9999;
+  overflow: hidden;
+  flex-direction: column;
+}
+
+.print-sheet.show {
+  display: flex;
+}
+
+.ps-header {
+  background: #0d9488;
+  padding: 32px 48px 28px;
+  flex-shrink: 0;
+}
+
+.ps-logo-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 28px;
+}
+
+.ps-logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 36px;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+
+.ps-logo em {
+  font-style: normal;
+  color: rgba(255,255,255,0.45);
+}
+
+.ps-brand {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.ps-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255,255,255,0.35);
+  color: rgba(255,255,255,0.75);
+  padding: 4px 12px;
+}
+
+.ps-film-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.ps-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 80px;
+  color: #fff;
+  letter-spacing: 0.03em;
+  line-height: 1;
+}
+
+.ps-body {
+  flex: 1;
+  padding: 36px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.ps-section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: #0d9488;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ps-section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(13,148,136,0.2);
+}
+
+.ps-logline {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  color: #374151;
+  line-height: 1.65;
+}
+
+.ps-tagline {
+  font-family: 'DM Mono', monospace;
+  font-size: 16px;
+  font-style: italic;
+  color: #0d9488;
+}
+
+.ps-synopsis {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  color: #374151;
+  line-height: 1.75;
+  border-left: 3px solid #0d9488;
+  padding-left: 16px;
+}
+
+.ps-footer {
+  background: #0d9488;
+  padding: 14px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.ps-footer-text {
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+/* ── PRINT STYLES ── */
+@media print {
+  @page {
+    margin: 0;
+    size: A4 portrait;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Hide everything */
+  body > * {
+    display: none !important;
+  }
+
+  /* Show only print sheet */
+  #printSheet {
+    display: flex !important;
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 99999 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Ensure no browser headers/footers bleed in */
+  .no-print {
+    display: none !important;
+  }
+}
