@@ -1,0 +1,10 @@
+{
+  "name": "pitchd-frontend",
+  "private": true,
+  "scripts": {
+    "start": "serve -s /app/dist -l 3000"
+  },
+  "dependencies": {
+    "serve": "^14.2.0"
+  }
+}
