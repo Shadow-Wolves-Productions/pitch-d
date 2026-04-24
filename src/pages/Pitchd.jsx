@@ -1,13 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import React, { useState, useRef } from 'react';
 import Header from '@/components/pitchd/Header';
 import StepIndicator from '@/components/pitchd/StepIndicator';
 import ScriptInput from '@/components/pitchd/ScriptInput';
 import OneSheetBuilder from '@/components/pitchd/OneSheetBuilder';
 import Footer from '@/components/pitchd/Footer';
-import { SYSTEM_PROMPT, RESPONSE_SCHEMA } from '@/lib/pitchdPrompt';
-
-const MAX_CHARS = 325000;
+import { analyseScript } from '@/lib/pitchdApi';
 
 export default function Pitchd() {
   const [text, setText] = useState('');
@@ -19,28 +16,21 @@ export default function Pitchd() {
   const step = result ? 3 : loading ? 2 : 1;
 
   const handleGenerate = async () => {
-    if (loading) return;
+    if (loading || !text.trim()) return;
     setError('');
     setLoading(true);
     try {
-      const script = text.slice(0, MAX_CHARS);
-      const res = await base44.integrations.Core.InvokeLLM({
-        prompt: `${SYSTEM_PROMPT}\n\n---\n\nSCRIPT / TREATMENT:\n\n${script}`,
-        response_json_schema: RESPONSE_SCHEMA,
-      });
-      setResult(res);
+      const data = await analyseScript(text);
+      setResult(data);
+      setTimeout(() => {
+        builderRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
     } catch (err) {
-      setError('Something broke reading the room. Try again.');
+      setError(`Something went wrong: ${err.message}`);
     } finally {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (result && builderRef.current) {
-      builderRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }, [result]);
 
   const handleReset = () => {
     setResult(null);
@@ -65,10 +55,7 @@ export default function Pitchd() {
         )}
 
         {error && !loading && (
-          <p
-            className="no-print font-mono-dm mt-4"
-            style={{ fontSize: '12px', color: '#dc2626' }}
-          >
+          <p className="no-print font-mono-dm mt-4" style={{ fontSize: '12px', color: '#dc2626' }}>
             {error}
           </p>
         )}

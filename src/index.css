@@ -257,3 +257,37 @@
   letter-spacing: 0.15em;
   text-transform: uppercase;
 }
+/* ── PRINT STYLES ── */
+@media print {
+  @page {
+    margin: 0;
+    size: A4 portrait;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Hide everything */
+  body > * {
+    display: none !important;
+  }
+
+  /* Show only print sheet */
+  #printSheet {
+    display: flex !important;
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 99999 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Ensure no browser headers/footers bleed in */
+  .no-print {
+    display: none !important;
+  }
+}

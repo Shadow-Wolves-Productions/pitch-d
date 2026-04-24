@@ -1,19 +1,15 @@
 import React, { useState } from 'react';
-import { RotateCcw } from 'lucide-react';
+import { RotateCcw, Lock, Download, Unlock, CheckCircle } from 'lucide-react';
 import SelectableCard from './onesheet/SelectableCard';
-import LockBar from './onesheet/LockBar';
-import LockedBanner from './onesheet/LockedBanner';
 import PromoModal from './onesheet/PromoModal';
 import PrintSheet from './onesheet/PrintSheet';
 import SectionLabel from './SectionLabel';
-import CrossPromo from './CrossPromo';
 
 export default function OneSheetBuilder({ data, onReset }) {
   const { primaryTitle, altTitles = [], loglines = [], taglines = [], synopsis: rawSynopsis = '' } = data;
-
   const allTitles = [primaryTitle, ...altTitles];
 
-  const [selectedTitle, setSelectedTitle] = useState(null);   // index
+  const [selectedTitle, setSelectedTitle] = useState(null);
   const [selectedLogline, setSelectedLogline] = useState(null);
   const [selectedTagline, setSelectedTagline] = useState(null);
 
@@ -25,6 +21,7 @@ export default function OneSheetBuilder({ data, onReset }) {
   const [locked, setLocked] = useState(false);
   const [showPromo, setShowPromo] = useState(false);
   const [showPrintSheet, setShowPrintSheet] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   const completed = [
     selectedTitle !== null,
@@ -32,60 +29,73 @@ export default function OneSheetBuilder({ data, onReset }) {
     selectedTagline !== null,
     editSynopsis.trim().length > 0,
   ];
+  const allDone = completed.every(Boolean);
 
   const handleSelectTitle = (i) => {
     if (locked) return;
-    if (selectedTitle === i) return;
     setSelectedTitle(i);
     setEditTitle(allTitles[i]);
   };
 
   const handleSelectLogline = (i) => {
     if (locked) return;
-    if (selectedLogline === i) return;
     setSelectedLogline(i);
     setEditLogline(loglines[i]);
   };
 
   const handleSelectTagline = (i) => {
     if (locked) return;
-    if (selectedTagline === i) return;
     setSelectedTagline(i);
     setEditTagline(taglines[i]);
   };
 
-  const handleLock = () => setLocked(true);
-  const handleUnlock = () => setLocked(false);
+  const handleLockAndExport = async () => {
+    if (!allDone) return;
+    setLocked(true);
+    setExporting(true);
+    // Small delay so locked state renders before print sheet shows
+    setTimeout(() => {
+      setShowPrintSheet(true);
+      setTimeout(() => {
+        window.print();
+        setTimeout(() => {
+          setShowPrintSheet(false);
+          setExporting(false);
+          setShowPromo(true);
+        }, 800);
+      }, 100);
+    }, 200);
+  };
 
-  const handleExport = () => {
+  const handleExportAgain = () => {
+    setExporting(true);
     setShowPrintSheet(true);
     setTimeout(() => {
       window.print();
       setTimeout(() => {
         setShowPrintSheet(false);
+        setExporting(false);
         setShowPromo(true);
-      }, 500);
-    }, 50);
+      }, 800);
+    }, 100);
   };
 
-  const finalTitle = selectedTitle !== null ? editTitle : '';
-  const finalLogline = selectedLogline !== null ? editLogline : '';
-  const finalTagline = selectedTagline !== null ? editTagline : '';
-  const finalSynopsis = editSynopsis;
+  const handleUnlock = () => {
+    setLocked(false);
+    setExporting(false);
+  };
 
   return (
     <>
       <PrintSheet
-        title={finalTitle}
-        logline={finalLogline}
-        tagline={finalTagline}
-        synopsis={finalSynopsis}
+        title={editTitle}
+        logline={editLogline}
+        tagline={editTagline}
+        synopsis={editSynopsis}
         visible={showPrintSheet}
       />
 
-      {/* Screen UI */}
       <div className="no-print space-y-10">
-
         {/* Top bar */}
         <div className="flex items-center justify-between gap-3">
           <div>
@@ -93,7 +103,9 @@ export default function OneSheetBuilder({ data, onReset }) {
               Build your One Sheet
             </h2>
             <p className="font-grotesk mt-1" style={{ fontSize: '13px', color: '#6b7280' }}>
-              Select one from each section, edit inline, then lock.
+              {locked
+                ? 'Locked and ready. Export or unlock to make changes.'
+                : 'Select one from each section — then edit if needed.'}
             </p>
           </div>
           <button
@@ -111,11 +123,73 @@ export default function OneSheetBuilder({ data, onReset }) {
           </button>
         </div>
 
-        {/* Lock bar or locked banner */}
-        {locked ? (
-          <LockedBanner onUnlock={handleUnlock} onExport={handleExport} />
-        ) : (
-          <LockBar completed={completed} onLock={handleLock} />
+        {/* LOCKED BANNER */}
+        {locked && (
+          <div
+            className="rounded-lg px-5 py-4 flex flex-col sm:flex-row items-center justify-between gap-4"
+            style={{ background: '#0d9488' }}
+          >
+            <div className="flex items-center gap-3">
+              <CheckCircle size={18} color="#ffffff" />
+              <span className="font-syne font-bold" style={{ fontSize: '15px', color: '#ffffff' }}>
+                ✓ Locked and ready to export
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleUnlock}
+                className="font-mono-dm uppercase flex items-center gap-1.5 px-4 py-2 rounded-md"
+                style={{
+                  fontSize: '11px',
+                  letterSpacing: '0.12em',
+                  background: 'rgba(255,255,255,0.15)',
+                  color: '#ffffff',
+                  border: '1px solid rgba(255,255,255,0.3)',
+                }}
+              >
+                <Unlock size={12} />
+                Unlock & Edit
+              </button>
+              <button
+                onClick={handleExportAgain}
+                disabled={exporting}
+                className="font-syne font-extrabold uppercase flex items-center gap-1.5 px-4 py-2 rounded-md"
+                style={{
+                  fontSize: '12px',
+                  letterSpacing: '0.05em',
+                  background: '#ffffff',
+                  color: '#0d9488',
+                  opacity: exporting ? 0.7 : 1,
+                }}
+              >
+                <Download size={13} />
+                {exporting ? 'Exporting…' : '↓ Export Again'}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* STATUS DOTS — only when unlocked */}
+        {!locked && (
+          <div
+            className="rounded-lg p-4 flex items-center gap-4 flex-wrap"
+            style={{ background: '#ffffff', border: '1px solid #e8e0d8', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}
+          >
+            {['Title', 'Logline', 'Tagline', 'Synopsis'].map((label, i) => (
+              <div key={label} className="flex items-center gap-1.5">
+                <span
+                  className="w-2.5 h-2.5 rounded-full transition-colors"
+                  style={{ background: completed[i] ? '#0d9488' : '#e5e7eb' }}
+                />
+                <span
+                  className="font-mono-dm uppercase"
+                  style={{ fontSize: '10px', letterSpacing: '0.15em', color: completed[i] ? '#0d9488' : '#9ca3af' }}
+                >
+                  {label}
+                </span>
+              </div>
+            ))}
+          </div>
         )}
 
         {/* TITLE */}
@@ -136,10 +210,7 @@ export default function OneSheetBuilder({ data, onReset }) {
                 {i === 0 ? (
                   <span>
                     {t}
-                    <span
-                      className="font-mono-dm ml-2"
-                      style={{ fontSize: '10px', letterSpacing: '0.15em', color: '#9ca3af', fontStyle: 'normal', fontWeight: 400, fontSize: '10px' }}
-                    >
+                    <span className="font-mono-dm ml-2" style={{ fontSize: '10px', letterSpacing: '0.15em', color: '#9ca3af', fontWeight: 400 }}>
                       AI Pick
                     </span>
                   </span>
@@ -190,7 +261,7 @@ export default function OneSheetBuilder({ data, onReset }) {
           </div>
         </section>
 
-        {/* SYNOPSIS — always editable */}
+        {/* SYNOPSIS */}
         <section>
           <SectionLabel>Synopsis — edit directly</SectionLabel>
           <div
@@ -219,12 +290,31 @@ export default function OneSheetBuilder({ data, onReset }) {
           </div>
         </section>
 
-        {/* Lock bar repeat at bottom for convenience */}
+        {/* LOCK & EXPORT — single button, only when unlocked */}
         {!locked && (
-          <LockBar completed={completed} onLock={handleLock} />
+          <button
+            onClick={handleLockAndExport}
+            disabled={!allDone}
+            className="w-full font-syne font-extrabold uppercase flex items-center justify-center gap-2 py-4 rounded-lg transition-all"
+            style={{
+              fontSize: '16px',
+              letterSpacing: '0.04em',
+              background: allDone ? '#0d9488' : '#e5e7eb',
+              color: allDone ? '#ffffff' : '#9ca3af',
+              cursor: allDone ? 'pointer' : 'not-allowed',
+              boxShadow: allDone ? '0 4px 16px rgba(13,148,136,0.3)' : 'none',
+            }}
+          >
+            <Lock size={16} />
+            Lock & Export One Sheet
+          </button>
         )}
 
-        <CrossPromo />
+        {!locked && !allDone && (
+          <p className="font-mono-dm text-center" style={{ fontSize: '10px', letterSpacing: '0.15em', color: '#9ca3af', textTransform: 'uppercase', marginTop: '-24px' }}>
+            Select a title, logline, and tagline to continue
+          </p>
+        )}
       </div>
 
       {showPromo && <PromoModal onClose={() => setShowPromo(false)} />}

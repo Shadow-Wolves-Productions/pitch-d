@@ -1,44 +1,27 @@
-import React from 'react';
+# PITCH'D — Emergent Deployment
 
-const STEPS = [
-  { num: '01', label: 'Script' },
-  { num: '02', label: 'Analyse' },
-  { num: '03', label: 'Results' },
-];
+## Setup
 
-export default function StepIndicator({ current = 1 }) {
-  return (
-    <div className="no-print flex items-center justify-between gap-2 py-6">
-      {STEPS.map((step, idx) => {
-        const stepNum = idx + 1;
-        const active = stepNum <= current;
-        return (
-          <React.Fragment key={step.num}>
-            <div className="flex items-center gap-2 shrink-0">
-              <span
-                className="w-2 h-2 rounded-full transition-colors"
-                style={{ background: active ? '#0d9488' : '#d1d5db' }}
-              />
-              <span
-                className="font-mono-dm uppercase"
-                style={{
-                  fontSize: '11px',
-                  letterSpacing: '0.12em',
-                  color: active ? '#0d9488' : '#9ca3af',
-                }}
-              >
-                {step.num} {step.label}
-              </span>
-            </div>
-            {idx < STEPS.length - 1 && (
-              <div
-                className="flex-1 h-px"
-                style={{ background: '#e5e7eb' }}
-              />
-            )}
-          </React.Fragment>
-        );
-      })}
-    </div>
-  );
-}
+1. Add environment variable in Emergent:
+   - `ANTHROPIC_API_KEY` = your key
+
+2. Deploy both services:
+   - Backend: `uvicorn main:app` from `/backend`
+   - Frontend: `npm run build` from root, serve `/dist`
+
+3. Route `/api/*` to backend, everything else to frontend SPA
+
+## Local Dev
+
+```bash
+# Terminal 1 — backend
+cd backend
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8000
+
+# Terminal 2 — frontend
+npm install
+npm run dev
+```
+
+Frontend proxies `/api/*` to `localhost:8000` via vite config.
