@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Upload, FileText, X } from 'lucide-react';
 
-const MAX_CHARS = 325000;
+const MAX_CHARS = 300000;
 const ACCEPTED = '.txt,.pdf,.docx,.fountain,.fdx,.md';
 
 async function extractFromFile(file) {

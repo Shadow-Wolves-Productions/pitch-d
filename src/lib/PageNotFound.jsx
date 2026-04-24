@@ -15,7 +15,7 @@ export default function PageNotFound() {
                     </div>
                     
                     <div className="space-y-3">
-                        <h2 className="text-2xl font-medium" style={{ color: '#1a1a1a', fontFamily: 'var(--font-syne)' }}>
+                        <h2 className="text-2xl font-medium" style={{ color: '#1a1a1a', fontFamily: "'Bebas Neue', sans-serif" }}>
                             Page Not Found
                         </h2>
                         <p style={{ color: '#6b7280' }}>

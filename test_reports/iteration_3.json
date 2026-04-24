@@ -1,0 +1,65 @@
+{
+  "summary": "Completed comprehensive testing of PITCH'D iteration 3 with major backend rewrite (OpenAI SDK, dual-mode prompts) and font changes (Syne → Bebas Neue). All tests passed.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_pitchd_api.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_pitchd_api.py"
+  ],
+  "success_rate": {
+    "backend": "100% (8/8 tests passed)",
+    "frontend": "100%"
+  },
+  "test_credentials": "None required - no authentication in this app",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Iteration 3 major changes all verified working: 1) Backend rewritten with OpenAI SDK (gpt-4o model) with dual-mode prompts - script mode (>=1000 chars) uses Dr. Scrypto prompt, concept mode (<1000 chars) uses development exec prompt. 2) All fonts changed from Syne to Bebas Neue - verified via computed styles on logo, heading, button, and title cards. 3) API returns parsed JSON directly with new fields: genre, subgenres, tone, time_period, setting. 4) PDF export works correctly (downloads file, not print dialog). 5) Promo modal with PITCHD25 code appears after export.",
+  "features_tested": {
+    "font_verification": {
+      "logo_bebas_neue": "PASS - font-family: 'Bebas Neue', sans-serif",
+      "heading_bebas_neue": "PASS - 'Your story. Worth the room.' uses Bebas Neue",
+      "button_bebas_neue": "PASS - 'Develop the Pitch' button uses Bebas Neue",
+      "title_cards_bebas_neue": "PASS - All title cards (36px) use Bebas Neue"
+    },
+    "backend_api": {
+      "health_endpoint": "PASS - /api/health returns {status: 'ok'}",
+      "empty_text_validation": "PASS - Returns 400 for empty text",
+      "whitespace_validation": "PASS - Returns 400 for whitespace-only",
+      "missing_text_validation": "PASS - Returns 400 for missing text field",
+      "concept_mode": "PASS - Text <1000 chars returns valid JSON with all fields",
+      "script_mode": "PASS - Text >=1000 chars returns valid JSON with all fields",
+      "mode_threshold_999": "PASS - 999 chars uses concept mode",
+      "mode_threshold_1000": "PASS - 1000 chars uses script mode"
+    },
+    "frontend_e2e": {
+      "concept_mode_flow": "PASS - 561 chars → generate → results with titles, loglines, taglines, synopsis",
+      "script_mode_flow": "PASS - 2895 chars → generate → results with titles, loglines, taglines, synopsis",
+      "selection_flow": "PASS - Can select title, logline, tagline",
+      "pdf_export": "PASS - Downloads PITCHD_*_OneSheet.pdf (not print dialog)",
+      "promo_modal": "PASS - PITCHD25 code modal appears after export"
+    },
+    "new_api_fields": {
+      "genre": "PASS - Returned in response",
+      "subgenres": "PASS - Returned as array",
+      "tone": "PASS - Returned in response",
+      "time_period": "PASS - Returned in response",
+      "setting": "PASS - Returned in response"
+    }
+  },
+  "test_downloads": [
+    "PITCHD_THE_NEIGHBORS_SHADOW_OneSheet.pdf"
+  ]
+}

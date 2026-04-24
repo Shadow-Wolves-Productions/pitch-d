@@ -36,7 +36,7 @@
     --pitchd-border: #e8e0d8;
     --pitchd-divider: #f0ebe4;
 
-    --font-syne: 'Syne', sans-serif;
+    --font-syne: 'Bebas Neue', sans-serif;
     --font-grotesk: 'Space Grotesk', sans-serif;
     --font-mono: 'DM Mono', monospace;
     --font-marker: 'Permanent Marker', cursive;
@@ -141,7 +141,7 @@
 }
 
 .ps-logo {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Bebas Neue', sans-serif;
   font-weight: 800;
   font-size: 36px;
   color: #fff;

@@ -1,7 +1,7 @@
 import React from 'react';
 
 const MIN_CHARS = 200;
-const MAX_CHARS = 325000;
+const MAX_CHARS = 300000;
 
 export default function PasteTab({ value, onChange }) {
   const count = value.length;

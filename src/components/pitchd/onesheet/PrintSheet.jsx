@@ -23,7 +23,7 @@ export default function PrintSheet({ title, logline, tagline, synopsis, visible 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '32px' }}>
           <div>
             <div style={{
-              fontFamily: "'Syne', sans-serif",
+              fontFamily: "'Bebas Neue', sans-serif",
               fontWeight: 800,
               fontSize: '36px',
               color: '#ffffff',
