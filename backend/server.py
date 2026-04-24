@@ -114,7 +114,7 @@ async def analyse(request: Request):
 
     if is_script:
         system_prompt = SCRIPT_SYSTEM_PROMPT
-        user_prompt = build_script_user_prompt(text[:300000])
+        user_prompt = build_script_user_prompt(text[:100000])
     else:
         system_prompt = CONCEPT_SYSTEM_PROMPT
         user_prompt = build_concept_user_prompt(text)

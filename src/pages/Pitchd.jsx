@@ -4,13 +4,14 @@ import StepIndicator from '@/components/pitchd/StepIndicator';
 import ScriptInput from '@/components/pitchd/ScriptInput';
 import OneSheetBuilder from '@/components/pitchd/OneSheetBuilder';
 import Footer from '@/components/pitchd/Footer';
-import { analyseScript } from '@/lib/pitchdApi';
+import { analyseScript, TRUNCATE_LIMIT } from '@/lib/pitchdApi';
 
 export default function Pitchd() {
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
+  const [wasTruncated, setWasTruncated] = useState(false);
   const builderRef = useRef(null);
 
   const step = result ? 3 : loading ? 2 : 1;
@@ -18,6 +19,7 @@ export default function Pitchd() {
   const handleGenerate = async () => {
     if (loading || !text.trim()) return;
     setError('');
+    setWasTruncated(text.length > TRUNCATE_LIMIT);
     setLoading(true);
     try {
       const data = await analyseScript(text);
@@ -36,6 +38,7 @@ export default function Pitchd() {
     setResult(null);
     setError('');
     setText('');
+    setWasTruncated(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -62,7 +65,7 @@ export default function Pitchd() {
 
         {result && (
           <div ref={builderRef} className="mt-6 mb-16">
-            <OneSheetBuilder data={result} onReset={handleReset} />
+            <OneSheetBuilder data={result} onReset={handleReset} wasTruncated={wasTruncated} />
           </div>
         )}
 

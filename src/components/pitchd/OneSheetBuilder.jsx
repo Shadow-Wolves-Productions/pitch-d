@@ -6,6 +6,7 @@ import SelectableCard from './onesheet/SelectableCard';
 import PromoModal from './onesheet/PromoModal';
 import PrintSheet from './onesheet/PrintSheet';
 import SectionLabel from './SectionLabel';
+import UpgradeBanner from './UpgradeBanner';
 
 function triggerDownload(blob, filename) {
   const url = URL.createObjectURL(blob);
@@ -19,7 +20,7 @@ function triggerDownload(blob, filename) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-export default function OneSheetBuilder({ data, onReset }) {
+export default function OneSheetBuilder({ data, onReset, wasTruncated = false }) {
   const {
     primaryTitle, altTitles = [], loglines = [], taglines = [],
     synopsis: rawSynopsis = '', genre = '', subgenres = [],
@@ -402,6 +403,9 @@ export default function OneSheetBuilder({ data, onReset }) {
             )}
           </div>
         </section>
+
+        {/* UPGRADE BANNER — only when script was truncated */}
+        {wasTruncated && <UpgradeBanner />}
 
         {/* LOCK & EXPORT */}
         {!locked && (
