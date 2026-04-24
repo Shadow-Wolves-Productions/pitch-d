@@ -45,13 +45,13 @@ export default function SelectableCard({
   };
 
   const textStyle = {
-    fontFamily: italic ? 'var(--font-mono)' : large ? 'var(--font-syne)' : 'var(--font-grotesk)',
+    fontFamily: italic ? 'var(--font-mono)' : large ? "'Bebas Neue', sans-serif" : 'var(--font-grotesk)',
     fontStyle: italic ? 'italic' : 'normal',
-    fontSize: large ? '28px' : '15px',
-    fontWeight: large ? 800 : 400,
+    fontSize: large ? '36px' : '15px',
+    fontWeight: large ? 400 : 400,
     color: italic ? '#0d9488' : '#1a1a1a',
-    letterSpacing: large ? '-0.01em' : 'normal',
-    lineHeight: 1.5,
+    letterSpacing: large ? '0.03em' : 'normal',
+    lineHeight: 1.3,
   };
 
   return (

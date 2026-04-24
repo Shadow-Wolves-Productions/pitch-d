@@ -49,35 +49,60 @@ export default function OneSheetBuilder({ data, onReset }) {
     setEditTagline(taglines[i]);
   };
 
+  const loadScript = (src) =>
+    new Promise((resolve, reject) => {
+      if (document.querySelector(`script[src="${src}"]`)) return resolve();
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = resolve;
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+
+  const exportPdf = async () => {
+    setExporting(true);
+    setShowPrintSheet(true);
+
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+
+    // Wait for the print sheet to render
+    await new Promise((r) => setTimeout(r, 400));
+
+    const el = document.getElementById('printSheet');
+    const canvas = await window.html2canvas(el, {
+      scale: 2,
+      backgroundColor: '#ffffff',
+      useCORS: true,
+    });
+
+    const imgData = canvas.toDataURL('image/png');
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const pdfW = pdf.internal.pageSize.getWidth();
+    const pdfH = pdf.internal.pageSize.getHeight();
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfW, pdfH);
+
+    const safeTitle = (editTitle || 'Pitch')
+      .replace(/[^a-zA-Z0-9 ]/g, '')
+      .replace(/\s+/g, '_')
+      .toUpperCase()
+      .slice(0, 40);
+    pdf.save(`PITCHD_${safeTitle}_OneSheet.pdf`);
+
+    setShowPrintSheet(false);
+    setExporting(false);
+    setShowPromo(true);
+  };
+
   const handleLockAndExport = async () => {
     if (!allDone) return;
     setLocked(true);
-    setExporting(true);
-    // Small delay so locked state renders before print sheet shows
-    setTimeout(() => {
-      setShowPrintSheet(true);
-      setTimeout(() => {
-        window.print();
-        setTimeout(() => {
-          setShowPrintSheet(false);
-          setExporting(false);
-          setShowPromo(true);
-        }, 800);
-      }, 100);
-    }, 200);
+    await exportPdf();
   };
 
   const handleExportAgain = () => {
-    setExporting(true);
-    setShowPrintSheet(true);
-    setTimeout(() => {
-      window.print();
-      setTimeout(() => {
-        setShowPrintSheet(false);
-        setExporting(false);
-        setShowPromo(true);
-      }, 800);
-    }, 100);
+    exportPdf();
   };
 
   const handleUnlock = () => {
