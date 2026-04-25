@@ -17,7 +17,7 @@ export default function PasteTab({ value, onChange }) {
       <textarea
         value={value}
         onChange={handleChange}
-        placeholder="Paste your screenplay, treatment, or story concept here. The more material, the sharper the read."
+        placeholder="Paste your script, treatment, or idea here. The more you give us, the sharper the read. Don't overthink it. Just write."
         rows={14}
         className="w-full resize-y rounded-lg p-4 font-grotesk text-[15px] leading-relaxed outline-none transition-colors"
         style={{
@@ -39,20 +39,18 @@ export default function PasteTab({ value, onChange }) {
         >
           {count.toLocaleString()} / {MIN_CHARS} chars minimum
         </span>
-        {ready && (
-          <span
-            className="font-mono-dm uppercase px-2 py-1 rounded"
-            style={{
-              fontSize: '10px',
-              letterSpacing: '0.15em',
-              color: '#0d9488',
-              background: 'rgba(13,148,136,0.08)',
-              border: '1px solid rgba(13,148,136,0.25)',
-            }}
-          >
-            ● Ready
-          </span>
-        )}
+        <span
+          className="font-mono-dm uppercase px-2 py-1 rounded"
+          style={{
+            fontSize: '10px',
+            letterSpacing: '0.15em',
+            color: ready ? '#0d9488' : '#9ca3af',
+            background: ready ? 'rgba(13,148,136,0.08)' : 'transparent',
+            border: ready ? '1px solid rgba(13,148,136,0.25)' : '1px solid transparent',
+          }}
+        >
+          {ready ? 'GOOD TO GO' : 'GIVE US MORE'}
+        </span>
       </div>
     </div>
   );

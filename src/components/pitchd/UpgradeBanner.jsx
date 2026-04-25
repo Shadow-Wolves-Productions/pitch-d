@@ -1,23 +1,17 @@
 import React from 'react';
 
 const FEATURES_LEFT = [
-  'Full script coverage report',
-  'Dr. Scrypto character arc analysis',
-  'Scene-by-scene breakdown',
-  'Comparable films & market positioning',
-  'Budget tier estimate',
-  'Target audience analysis',
-  'Genre & subgenre classification',
+  'Studio-grade script coverage across 8 categories',
+  'Bechdel and representation analysis',
+  'Draft comparison',
+  'Budget tier generation',
 ];
 
 const FEATURES_RIGHT = [
-  'Tone & thematic analysis',
-  'Development notes & story weaknesses',
-  'Confidence scoring on every asset',
-  'Production pipeline management',
-  'Cast & crew database via SPOT\'D',
-  'Festival submission tracker',
-  'Full exportable studio coverage PDF',
+  'Character profiles',
+  'Scene breakdowns',
+  'Casting suggestions',
+  'Comparable films',
 ];
 
 export default function UpgradeBanner() {
@@ -30,19 +24,15 @@ export default function UpgradeBanner() {
       <div className="px-7 pt-7 pb-6">
         <h3
           className="font-syne"
-          style={{
-            fontSize: '22px',
-            color: '#ffffff',
-            lineHeight: 1.3,
-          }}
+          style={{ fontSize: '22px', color: '#ffffff', lineHeight: 1.3 }}
         >
-          Your script is feature length. PITCH'D only scratches the surface.
+          Your script is feature-length. PITCH'D only scratches the surface.
         </h3>
         <p
           className="font-grotesk mt-3"
           style={{ fontSize: '14px', color: 'rgba(255,255,255,0.85)', lineHeight: 1.6 }}
         >
-          You've got the logline. Now get the full picture. SLATR delivers everything a studio coverage report includes — and more:
+          We got you started. Now take it all the way with SLATR — our complete production pipeline, including:
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 mt-5">
@@ -50,13 +40,8 @@ export default function UpgradeBanner() {
             <div key={ci} className="space-y-2">
               {col.map((feature) => (
                 <div key={feature} className="flex items-start gap-2">
-                  <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '13px', lineHeight: '20px', flexShrink: 0 }}>
-                    &#10003;
-                  </span>
-                  <span
-                    className="font-grotesk"
-                    style={{ fontSize: '13px', color: 'rgba(255,255,255,0.9)', lineHeight: '20px' }}
-                  >
+                  <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '13px', lineHeight: '20px', flexShrink: 0 }}>&#10003;</span>
+                  <span className="font-grotesk" style={{ fontSize: '13px', color: 'rgba(255,255,255,0.9)', lineHeight: '20px' }}>
                     {feature}
                   </span>
                 </div>
@@ -71,12 +56,7 @@ export default function UpgradeBanner() {
             target="_blank"
             rel="noopener noreferrer"
             className="font-syne text-center px-6 py-3 rounded-lg transition-all hover:opacity-90"
-            style={{
-              fontSize: '14px',
-              background: '#ffffff',
-              color: '#0d9488',
-              textDecoration: 'none',
-            }}
+            style={{ fontSize: '14px', background: '#ffffff', color: '#0d9488', textDecoration: 'none' }}
           >
             Get Full Coverage on SLATR &rarr;
           </a>
@@ -85,26 +65,14 @@ export default function UpgradeBanner() {
             target="_blank"
             rel="noopener noreferrer"
             className="font-grotesk text-center px-6 py-3 rounded-lg transition-all hover:bg-white/10"
-            style={{
-              fontSize: '14px',
-              color: '#ffffff',
-              border: '1px solid rgba(255,255,255,0.4)',
-              textDecoration: 'none',
-            }}
+            style={{ fontSize: '14px', color: '#ffffff', border: '1px solid rgba(255,255,255,0.4)', textDecoration: 'none' }}
           >
             Learn More
           </a>
         </div>
 
-        <p
-          className="font-mono-dm mt-4"
-          style={{
-            fontSize: '10px',
-            letterSpacing: '0.08em',
-            color: 'rgba(255,255,255,0.5)',
-          }}
-        >
-          Use code PITCHD25 for 15% off &middot; One month free on annual plans
+        <p className="font-mono-dm mt-4" style={{ fontSize: '10px', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.5)' }}>
+          Use code PITCHD25 for 15% off &middot; Includes 7-Day free trial.
         </p>
       </div>
     </div>

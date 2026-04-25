@@ -6,7 +6,6 @@ import SelectableCard from './onesheet/SelectableCard';
 import PromoModal from './onesheet/PromoModal';
 import PrintSheet from './onesheet/PrintSheet';
 import SectionLabel from './SectionLabel';
-import UpgradeBanner from './UpgradeBanner';
 
 function triggerDownload(blob, filename) {
   const url = URL.createObjectURL(blob);
@@ -20,7 +19,7 @@ function triggerDownload(blob, filename) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-export default function OneSheetBuilder({ data, onReset, wasTruncated = false }) {
+export default function OneSheetBuilder({ data, onReset }) {
   const {
     primaryTitle, altTitles = [], loglines = [], taglines = [],
     synopsis: rawSynopsis = '', genre = '', subgenres = [],
@@ -72,7 +71,6 @@ export default function OneSheetBuilder({ data, onReset, wasTruncated = false })
     setExporting(true);
     setShowPrintSheet(true);
 
-    // Wait for print sheet to render
     await new Promise((r) => setTimeout(r, 600));
 
     try {
@@ -98,7 +96,6 @@ export default function OneSheetBuilder({ data, onReset, wasTruncated = false })
         .toUpperCase()
         .slice(0, 40);
 
-      // Manual blob download — more reliable than pdf.save() in jsPDF v4
       const blob = pdf.output('blob');
       triggerDownload(blob, `PITCHD_${safeTitle}_OneSheet.pdf`);
 
@@ -109,7 +106,7 @@ export default function OneSheetBuilder({ data, onReset, wasTruncated = false })
       console.error('PDF export failed:', err);
       setShowPrintSheet(false);
       setExporting(false);
-      alert('PDF export failed — please try again.');
+      alert('Damn. Something went wrong on our end. Try again — it usually works the second time.');
     }
   };
 
@@ -128,7 +125,6 @@ export default function OneSheetBuilder({ data, onReset, wasTruncated = false })
     setExporting(false);
   };
 
-  // Metadata pills
   const metaItems = [
     genre && { label: 'Genre', value: genre },
     tone && { label: 'Tone', value: tone },
@@ -158,53 +154,34 @@ export default function OneSheetBuilder({ data, onReset, wasTruncated = false })
         <div className="flex items-center justify-between gap-3">
           <div>
             <h2 className="font-syne font-extrabold" style={{ fontSize: '20px', color: '#1a1a1a' }}>
-              Build your One Sheet
+              Build Your One Sheet
             </h2>
             <p className="font-grotesk mt-1" style={{ fontSize: '13px', color: '#6b7280' }}>
               {locked
                 ? 'Locked and ready. Export or unlock to make changes.'
-                : 'Select one from each section — then edit if needed.'}
+                : 'Pick one from each section. Edit anything. Lock it when it\'s right.'}
             </p>
           </div>
           <button
             onClick={onReset}
             className="font-mono-dm uppercase flex items-center gap-1.5 px-3 py-2 rounded-md transition-colors"
-            style={{
-              fontSize: '10px',
-              letterSpacing: '0.12em',
-              color: '#0d9488',
-              border: '1px solid rgba(13,148,136,0.25)',
-            }}
+            style={{ fontSize: '10px', letterSpacing: '0.12em', color: '#0d9488', border: '1px solid rgba(13,148,136,0.25)' }}
           >
             <RotateCcw size={12} />
-            New Pitch
+            Start Over
           </button>
         </div>
 
         {/* GENRE / TONE / SETTING METADATA */}
         {metaItems.length > 0 && (
-          <div
-            className="rounded-lg p-4"
-            style={{ background: 'rgba(13,148,136,0.05)', border: '1px solid rgba(13,148,136,0.15)' }}
-          >
+          <div className="rounded-lg p-4" style={{ background: 'rgba(13,148,136,0.05)', border: '1px solid rgba(13,148,136,0.15)' }}>
             <div className="flex flex-wrap gap-3">
               {metaItems.map((item) => (
                 <div key={item.label} className="flex items-center gap-2">
-                  <span
-                    className="font-mono-dm uppercase"
-                    style={{ fontSize: '9px', letterSpacing: '0.15em', color: '#0d9488' }}
-                  >
+                  <span className="font-mono-dm uppercase" style={{ fontSize: '9px', letterSpacing: '0.15em', color: '#0d9488' }}>
                     {item.label}
                   </span>
-                  <span
-                    className="font-grotesk px-2.5 py-1 rounded-md"
-                    style={{
-                      fontSize: '13px',
-                      color: '#1a1a1a',
-                      background: '#ffffff',
-                      border: '1px solid #e8e0d8',
-                    }}
-                  >
+                  <span className="font-grotesk px-2.5 py-1 rounded-md" style={{ fontSize: '13px', color: '#1a1a1a', background: '#ffffff', border: '1px solid #e8e0d8' }}>
                     {item.value}
                   </span>
                 </div>
@@ -212,23 +189,9 @@ export default function OneSheetBuilder({ data, onReset, wasTruncated = false })
             </div>
             {subgenreList.length > 0 && (
               <div className="flex items-center gap-2 mt-3">
-                <span
-                  className="font-mono-dm uppercase"
-                  style={{ fontSize: '9px', letterSpacing: '0.15em', color: '#0d9488' }}
-                >
-                  Subgenres
-                </span>
+                <span className="font-mono-dm uppercase" style={{ fontSize: '9px', letterSpacing: '0.15em', color: '#0d9488' }}>Subgenres</span>
                 {subgenreList.map((sg, i) => (
-                  <span
-                    key={i}
-                    className="font-grotesk px-2 py-0.5 rounded-full"
-                    style={{
-                      fontSize: '12px',
-                      color: '#0d9488',
-                      background: 'rgba(13,148,136,0.08)',
-                      border: '1px solid rgba(13,148,136,0.2)',
-                    }}
-                  >
+                  <span key={i} className="font-grotesk px-2 py-0.5 rounded-full" style={{ fontSize: '12px', color: '#0d9488', background: 'rgba(13,148,136,0.08)', border: '1px solid rgba(13,148,136,0.2)' }}>
                     {sg}
                   </span>
                 ))}
@@ -239,27 +202,18 @@ export default function OneSheetBuilder({ data, onReset, wasTruncated = false })
 
         {/* LOCKED BANNER */}
         {locked && (
-          <div
-            className="rounded-lg px-5 py-4 flex flex-col sm:flex-row items-center justify-between gap-4"
-            style={{ background: '#0d9488' }}
-          >
+          <div className="rounded-lg px-5 py-4 flex flex-col sm:flex-row items-center justify-between gap-4" style={{ background: '#0d9488' }}>
             <div className="flex items-center gap-3">
               <CheckCircle size={18} color="#ffffff" />
               <span className="font-syne font-bold" style={{ fontSize: '15px', color: '#ffffff' }}>
-                Locked and ready to export
+                Locked. You're ready to go.
               </span>
             </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={handleUnlock}
                 className="font-mono-dm uppercase flex items-center gap-1.5 px-4 py-2 rounded-md"
-                style={{
-                  fontSize: '11px',
-                  letterSpacing: '0.12em',
-                  background: 'rgba(255,255,255,0.15)',
-                  color: '#ffffff',
-                  border: '1px solid rgba(255,255,255,0.3)',
-                }}
+                style={{ fontSize: '11px', letterSpacing: '0.12em', background: 'rgba(255,255,255,0.15)', color: '#ffffff', border: '1px solid rgba(255,255,255,0.3)' }}
               >
                 <Unlock size={12} />
                 Unlock & Edit
@@ -268,37 +222,22 @@ export default function OneSheetBuilder({ data, onReset, wasTruncated = false })
                 onClick={handleExportAgain}
                 disabled={exporting}
                 className="font-syne font-extrabold uppercase flex items-center gap-1.5 px-4 py-2 rounded-md"
-                style={{
-                  fontSize: '12px',
-                  letterSpacing: '0.05em',
-                  background: '#ffffff',
-                  color: '#0d9488',
-                  opacity: exporting ? 0.7 : 1,
-                }}
+                style={{ fontSize: '12px', letterSpacing: '0.05em', background: '#ffffff', color: '#0d9488', opacity: exporting ? 0.7 : 1 }}
               >
                 <Download size={13} />
-                {exporting ? 'Exporting…' : 'Export Again'}
+                {exporting ? 'Exporting...' : 'Download One Sheet'}
               </button>
             </div>
           </div>
         )}
 
-        {/* STATUS DOTS — only when unlocked */}
+        {/* STATUS DOTS */}
         {!locked && (
-          <div
-            className="rounded-lg p-4 flex items-center gap-4 flex-wrap"
-            style={{ background: '#ffffff', border: '1px solid #e8e0d8', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}
-          >
+          <div className="rounded-lg p-4 flex items-center gap-4 flex-wrap" style={{ background: '#ffffff', border: '1px solid #e8e0d8', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
             {['Title', 'Logline', 'Tagline', 'Synopsis'].map((label, i) => (
               <div key={label} className="flex items-center gap-1.5">
-                <span
-                  className="w-2.5 h-2.5 rounded-full transition-colors"
-                  style={{ background: completed[i] ? '#0d9488' : '#e5e7eb' }}
-                />
-                <span
-                  className="font-mono-dm uppercase"
-                  style={{ fontSize: '10px', letterSpacing: '0.15em', color: completed[i] ? '#0d9488' : '#9ca3af' }}
-                >
+                <span className="w-2.5 h-2.5 rounded-full transition-colors" style={{ background: completed[i] ? '#0d9488' : '#e5e7eb' }} />
+                <span className="font-mono-dm uppercase" style={{ fontSize: '10px', letterSpacing: '0.15em', color: completed[i] ? '#0d9488' : '#9ca3af' }}>
                   {label}
                 </span>
               </div>
@@ -308,7 +247,7 @@ export default function OneSheetBuilder({ data, onReset, wasTruncated = false })
 
         {/* TITLE */}
         <section>
-          <SectionLabel>Title — pick one</SectionLabel>
+          <SectionLabel>Title — pick the one that fits</SectionLabel>
           <div className="space-y-3">
             {allTitles.map((t, i) => (
               <SelectableCard
@@ -324,7 +263,10 @@ export default function OneSheetBuilder({ data, onReset, wasTruncated = false })
                 {i === 0 ? (
                   <span>
                     {t}
-                    <span className="font-mono-dm ml-2" style={{ fontSize: '10px', letterSpacing: '0.15em', color: '#9ca3af', fontWeight: 400 }}>
+                    <span
+                      className="font-mono-dm ml-2 px-2 py-0.5 rounded-full"
+                      style={{ fontSize: '9px', letterSpacing: '0.1em', color: '#0d9488', background: 'rgba(13,148,136,0.1)', fontWeight: 400 }}
+                    >
                       AI Pick
                     </span>
                   </span>
@@ -336,18 +278,10 @@ export default function OneSheetBuilder({ data, onReset, wasTruncated = false })
 
         {/* LOGLINE */}
         <section>
-          <SectionLabel>Logline — pick one</SectionLabel>
+          <SectionLabel>Logline — pick the angle that lands</SectionLabel>
           <div className="space-y-3">
             {loglines.map((l, i) => (
-              <SelectableCard
-                key={i}
-                index={i}
-                selected={selectedLogline === i}
-                locked={locked}
-                onSelect={() => handleSelectLogline(i)}
-                editValue={editLogline}
-                onEditChange={setEditLogline}
-              >
+              <SelectableCard key={i} index={i} selected={selectedLogline === i} locked={locked} onSelect={() => handleSelectLogline(i)} editValue={editLogline} onEditChange={setEditLogline}>
                 {l}
               </SelectableCard>
             ))}
@@ -356,19 +290,10 @@ export default function OneSheetBuilder({ data, onReset, wasTruncated = false })
 
         {/* TAGLINE */}
         <section>
-          <SectionLabel>Tagline — pick one</SectionLabel>
+          <SectionLabel>Tagline — pick the line that sticks</SectionLabel>
           <div className="space-y-3">
             {taglines.map((t, i) => (
-              <SelectableCard
-                key={i}
-                index={i}
-                selected={selectedTagline === i}
-                locked={locked}
-                onSelect={() => handleSelectTagline(i)}
-                editValue={editTagline}
-                onEditChange={setEditTagline}
-                italic
-              >
+              <SelectableCard key={i} index={i} selected={selectedTagline === i} locked={locked} onSelect={() => handleSelectTagline(i)} editValue={editTagline} onEditChange={setEditTagline} italic>
                 "{t}"
               </SelectableCard>
             ))}
@@ -377,35 +302,27 @@ export default function OneSheetBuilder({ data, onReset, wasTruncated = false })
 
         {/* SYNOPSIS */}
         <section>
-          <SectionLabel>Synopsis — edit directly</SectionLabel>
-          <div
-            className="rounded-lg p-6"
-            style={{
-              background: '#ffffff',
-              border: '1px solid #e8e0d8',
-              borderLeft: '3px solid #0d9488',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-            }}
-          >
+          <SectionLabel>Synopsis — edit until it reads right</SectionLabel>
+          <div className="rounded-lg p-6" style={{ background: '#ffffff', border: '1px solid #e8e0d8', borderLeft: '3px solid #0d9488', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
             {locked ? (
-              <p className="font-grotesk leading-relaxed" style={{ fontSize: '15px', color: '#374151' }}>
-                {editSynopsis}
-              </p>
+              <p className="font-grotesk leading-relaxed" style={{ fontSize: '15px', color: '#374151' }}>{editSynopsis}</p>
             ) : (
-              <textarea
-                value={editSynopsis}
-                onChange={(e) => setEditSynopsis(e.target.value)}
-                rows={5}
-                placeholder="Your synopsis will appear here — edit as needed."
-                className="w-full resize-none bg-transparent outline-none font-grotesk leading-relaxed"
-                style={{ fontSize: '15px', color: '#374151' }}
-              />
+              <>
+                <textarea
+                  value={editSynopsis}
+                  onChange={(e) => setEditSynopsis(e.target.value)}
+                  rows={5}
+                  placeholder="Your synopsis will appear here — edit as needed."
+                  className="w-full resize-none bg-transparent outline-none font-grotesk leading-relaxed"
+                  style={{ fontSize: '15px', color: '#374151' }}
+                />
+                <p className="font-mono-dm mt-1" style={{ fontSize: '10px', color: '#9ca3af', letterSpacing: '0.05em' }}>
+                  This is yours — rewrite it until it sounds like you
+                </p>
+              </>
             )}
           </div>
         </section>
-
-        {/* UPGRADE BANNER — only when script was truncated */}
-        {wasTruncated && <UpgradeBanner />}
 
         {/* LOCK & EXPORT */}
         {!locked && (
@@ -430,7 +347,13 @@ export default function OneSheetBuilder({ data, onReset, wasTruncated = false })
 
         {!locked && !allDone && (
           <p className="font-mono-dm text-center" style={{ fontSize: '10px', letterSpacing: '0.15em', color: '#9ca3af', textTransform: 'uppercase', marginTop: '-24px' }}>
-            Select a title, logline, and tagline to continue
+            Pick a title, logline, and tagline to unlock export
+          </p>
+        )}
+
+        {!locked && allDone && (
+          <p className="font-mono-dm text-center" style={{ fontSize: '10px', letterSpacing: '0.15em', color: '#0d9488', textTransform: 'uppercase', marginTop: '-24px' }}>
+            You're ready. Lock it and export.
           </p>
         )}
       </div>

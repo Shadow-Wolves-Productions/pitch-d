@@ -55,12 +55,17 @@ export default function ScriptInput({ text, setText, onGenerate, loading }) {
         }}
       >
         {loading ? (
-          <span className="flex items-center justify-center gap-3">
-            <span className="film-strip-loader w-16" />
-            <span>Reading the room…</span>
-          </span>
+          <div className="flex flex-col items-center gap-1">
+            <span className="flex items-center gap-3">
+              <span className="film-strip-loader w-16" />
+              <span>Working our magic....</span>
+            </span>
+            <span className="font-grotesk normal-case" style={{ fontSize: '11px', opacity: 0.7, fontWeight: 400, letterSpacing: 'normal' }}>
+              Good things come to those who wait... so just wait!
+            </span>
+          </div>
         ) : (
-          'Develop the Pitch →'
+          "LET'S DO IT! \u2192"
         )}
       </button>
     </section>

@@ -15,12 +15,10 @@ export default function SelectableCard({
   const [editing, setEditing] = useState(false);
   const textareaRef = useRef(null);
 
-  // Reset editing state when deselected or locked
   useEffect(() => {
     if (!selected || locked) setEditing(false);
   }, [selected, locked]);
 
-  // Focus textarea when editing starts
   useEffect(() => {
     if (editing && textareaRef.current) {
       textareaRef.current.focus();
@@ -32,7 +30,6 @@ export default function SelectableCard({
   const handleCardClick = () => {
     if (locked) return;
     if (!selected) onSelect();
-    // If already selected, clicking card does nothing — use edit button
   };
 
   const handleEditClick = (e) => {
@@ -67,32 +64,23 @@ export default function SelectableCard({
         cursor: locked ? 'default' : selected ? 'default' : 'pointer',
       }}
     >
-      {/* Top row: number + check + edit button */}
       <div className="flex items-center justify-between gap-3 mb-3">
         <div className="flex items-center gap-2">
           {index !== undefined && (
             <span
               className="font-mono-dm shrink-0"
-              style={{
-                fontSize: '11px',
-                letterSpacing: '0.15em',
-                color: selected ? '#0d9488' : '#9ca3af',
-              }}
+              style={{ fontSize: '11px', letterSpacing: '0.15em', color: selected ? '#0d9488' : '#9ca3af' }}
             >
               {String(index + 1).padStart(2, '0')}
             </span>
           )}
           {selected && (
-            <span
-              className="w-5 h-5 rounded-full flex items-center justify-center"
-              style={{ background: '#0d9488' }}
-            >
+            <span className="w-5 h-5 rounded-full flex items-center justify-center" style={{ background: '#0d9488' }}>
               <Check size={11} color="#fff" strokeWidth={3} />
             </span>
           )}
         </div>
 
-        {/* Edit button — only shown when selected and not locked */}
         {selected && !locked && !editing && (
           <button
             onClick={handleEditClick}
@@ -130,7 +118,6 @@ export default function SelectableCard({
         )}
       </div>
 
-      {/* Content — textarea when editing, text when not */}
       {selected && editing ? (
         <textarea
           ref={textareaRef}
@@ -150,6 +137,12 @@ export default function SelectableCard({
         <div style={textStyle}>
           {selected ? editValue : children}
         </div>
+      )}
+
+      {selected && !locked && !editing && (
+        <p className="font-mono-dm mt-2" style={{ fontSize: '10px', color: '#9ca3af', letterSpacing: '0.05em' }}>
+          Tap edit to rewrite in your own words
+        </p>
       )}
     </div>
   );

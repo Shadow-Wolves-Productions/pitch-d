@@ -28,7 +28,6 @@ async function extractFromFile(file) {
     return res.value || '';
   }
 
-  // .txt .fountain .fdx .md — plain text
   return await file.text();
 }
 
@@ -73,10 +72,7 @@ export default function UploadTab({ value, onChange }) {
   return (
     <div>
       <div
-        onDragOver={(e) => {
-          e.preventDefault();
-          setDragOver(true);
-        }}
+        onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
         onDragLeave={() => setDragOver(false)}
         onDrop={handleDrop}
         onClick={() => inputRef.current?.click()}
@@ -93,52 +89,39 @@ export default function UploadTab({ value, onChange }) {
           className="hidden"
           onChange={(e) => handleFile(e.target.files?.[0])}
         />
-        <Upload
-          className="mx-auto mb-3"
-          size={28}
-          style={{ color: dragOver ? '#0d9488' : '#9ca3af' }}
-        />
+        <Upload className="mx-auto mb-3" size={28} style={{ color: dragOver ? '#0d9488' : '#9ca3af' }} />
         <p className="font-grotesk text-[15px]" style={{ color: '#1a1a1a' }}>
-          {loading ? 'Reading file…' : 'Drop a file or click to browse'}
+          {loading ? 'Reading file...' : 'Drop your script here'}
         </p>
-        <p
-          className="font-mono-dm mt-2"
-          style={{ fontSize: '11px', letterSpacing: '0.08em', color: '#9ca3af' }}
-        >
-          .TXT · .PDF · .DOCX · .FOUNTAIN · .FDX · .MD
+        <p className="font-mono-dm mt-2" style={{ fontSize: '11px', letterSpacing: '0.08em', color: '#9ca3af' }}>
+          .PDF &middot; .DOCX &middot; .FOUNTAIN &middot; .FDX &middot; .TXT &middot; .MD
         </p>
+        {!loading && !fileName && (
+          <span
+            className="inline-block mt-4 font-mono-dm uppercase px-4 py-2 rounded-md transition-colors"
+            style={{ fontSize: '11px', letterSpacing: '0.12em', color: '#0d9488', border: '1px solid rgba(13,148,136,0.25)' }}
+          >
+            Browse Files
+          </span>
+        )}
       </div>
 
       {fileName && !loading && (
         <div
           className="mt-4 flex items-center justify-between rounded-lg p-3"
-          style={{
-            background: 'rgba(13,148,136,0.08)',
-            border: '1px solid rgba(13,148,136,0.25)',
-          }}
+          style={{ background: 'rgba(13,148,136,0.08)', border: '1px solid rgba(13,148,136,0.25)' }}
         >
           <div className="flex items-center gap-3 min-w-0">
             <FileText size={18} style={{ color: '#0d9488' }} />
             <div className="min-w-0">
-              <p
-                className="font-grotesk text-sm truncate"
-                style={{ color: '#1a1a1a' }}
-              >
-                {fileName}
-              </p>
-              <p
-                className="font-mono-dm"
-                style={{ fontSize: '10px', letterSpacing: '0.08em', color: '#0d9488' }}
-              >
-                {value.length.toLocaleString()} chars loaded
+              <p className="font-grotesk text-sm truncate" style={{ color: '#1a1a1a' }}>{fileName}</p>
+              <p className="font-mono-dm uppercase" style={{ fontSize: '10px', letterSpacing: '0.08em', color: '#0d9488' }}>
+                Ready to analyse
               </p>
             </div>
           </div>
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              clearFile();
-            }}
+            onClick={(e) => { e.stopPropagation(); clearFile(); }}
             className="p-1 rounded hover:bg-white/60 transition"
             aria-label="Remove file"
           >
@@ -148,12 +131,7 @@ export default function UploadTab({ value, onChange }) {
       )}
 
       {error && (
-        <p
-          className="mt-3 font-mono-dm"
-          style={{ fontSize: '11px', color: '#dc2626' }}
-        >
-          {error}
-        </p>
+        <p className="mt-3 font-mono-dm" style={{ fontSize: '11px', color: '#dc2626' }}>{error}</p>
       )}
     </div>
   );

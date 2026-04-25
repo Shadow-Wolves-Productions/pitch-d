@@ -3,6 +3,8 @@ import Header from '@/components/pitchd/Header';
 import StepIndicator from '@/components/pitchd/StepIndicator';
 import ScriptInput from '@/components/pitchd/ScriptInput';
 import OneSheetBuilder from '@/components/pitchd/OneSheetBuilder';
+import UpgradeBanner from '@/components/pitchd/UpgradeBanner';
+import EcosystemPromo from '@/components/pitchd/CrossPromo';
 import Footer from '@/components/pitchd/Footer';
 import { analyseScript, TRUNCATE_LIMIT } from '@/lib/pitchdApi';
 
@@ -18,6 +20,10 @@ export default function Pitchd() {
 
   const handleGenerate = async () => {
     if (loading || !text.trim()) return;
+    if (text.trim().length < 200) {
+      setError('Give us something to work with — paste at least a paragraph.');
+      return;
+    }
     setError('');
     setWasTruncated(text.length > TRUNCATE_LIMIT);
     setLoading(true);
@@ -28,7 +34,11 @@ export default function Pitchd() {
         builderRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 100);
     } catch (err) {
-      setError(`Something went wrong: ${err.message}`);
+      if (err.message.includes('fetch') || err.message.includes('network') || err.message.includes('Failed')) {
+        setError("Can't reach the server. Check your connection and try again.");
+      } else {
+        setError('Damn. Something went wrong on our end. Try again — it usually works the second time.');
+      }
     } finally {
       setLoading(false);
     }
@@ -48,6 +58,13 @@ export default function Pitchd() {
         <Header />
         <StepIndicator current={step} />
 
+        {/* TRUNCATION BANNER — under step indicators, before results */}
+        {result && wasTruncated && (
+          <div className="mb-8">
+            <UpgradeBanner />
+          </div>
+        )}
+
         {!result && (
           <ScriptInput
             text={text}
@@ -58,16 +75,19 @@ export default function Pitchd() {
         )}
 
         {error && !loading && (
-          <p className="no-print font-mono-dm mt-4" style={{ fontSize: '12px', color: '#dc2626' }}>
+          <p className="no-print font-grotesk mt-4" style={{ fontSize: '14px', color: '#dc2626' }}>
             {error}
           </p>
         )}
 
         {result && (
-          <div ref={builderRef} className="mt-6 mb-16">
-            <OneSheetBuilder data={result} onReset={handleReset} wasTruncated={wasTruncated} />
+          <div ref={builderRef} className="mt-6 mb-8">
+            <OneSheetBuilder data={result} onReset={handleReset} />
           </div>
         )}
+
+        {/* Ecosystem promo — after results */}
+        {result && <EcosystemPromo />}
 
         <Footer />
       </div>

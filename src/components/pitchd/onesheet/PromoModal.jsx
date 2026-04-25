@@ -22,10 +22,7 @@ export default function PromoModal({ onClose }) {
     >
       <div
         className="w-full max-w-sm rounded-xl p-7 relative"
-        style={{
-          background: '#ffffff',
-          boxShadow: '0 8px 40px rgba(0,0,0,0.18)',
-        }}
+        style={{ background: '#ffffff', boxShadow: '0 8px 40px rgba(0,0,0,0.18)' }}
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -37,84 +34,70 @@ export default function PromoModal({ onClose }) {
           <X size={16} />
         </button>
 
-        <div
-          className="font-syne font-extrabold mb-1"
-          style={{ fontSize: '20px', color: '#1a1a1a' }}
-        >
-          Take your project further.
+        <div className="font-syne font-extrabold mb-1" style={{ fontSize: '20px', color: '#1a1a1a' }}>
+          You're on a roll. Don't stop now.
         </div>
-        <p
-          className="font-grotesk leading-relaxed mb-5"
-          style={{ fontSize: '14px', color: '#6b7280' }}
-        >
-          15% off SLATR or Spot'd with your code. One month free on annual plans.
+        <p className="font-grotesk leading-relaxed mb-5" style={{ fontSize: '14px', color: '#6b7280' }}>
+          Don't let momentum kill your vision. Keep it going with 15% off SLATR or Spot'd. Use the code below.
         </p>
 
         <button
           onClick={copy}
           className="w-full flex items-center justify-between rounded-lg px-4 py-3 mb-5 transition-colors"
-          style={{
-            background: 'rgba(13,148,136,0.08)',
-            border: '1px solid rgba(13,148,136,0.25)',
-          }}
+          style={{ background: 'rgba(13,148,136,0.08)', border: '1px solid rgba(13,148,136,0.25)' }}
         >
-          <span
-            className="font-mono-dm uppercase"
-            style={{ fontSize: '14px', letterSpacing: '0.2em', color: '#0d9488' }}
-          >
+          <span className="font-mono-dm uppercase" style={{ fontSize: '14px', letterSpacing: '0.2em', color: '#0d9488' }}>
             {PROMO_CODE}
           </span>
-          <span
-            className="font-mono-dm flex items-center gap-1.5"
-            style={{ fontSize: '11px', letterSpacing: '0.1em', color: '#0d9488' }}
-          >
+          <span className="font-mono-dm flex items-center gap-1.5" style={{ fontSize: '11px', letterSpacing: '0.1em', color: '#0d9488' }}>
             {copied ? <Check size={13} /> : <Copy size={13} />}
-            {copied ? 'Copied!' : 'Copy'}
+            {copied ? 'Copied' : 'Copy'}
           </span>
         </button>
 
-        <div className="grid grid-cols-2 gap-3 mb-6">
-          {[
-            { name: 'SLATR', tagline: 'Production pipeline', href: 'https://www.slatr.com.au' },
-            { name: "SPOT'D", tagline: 'Casting & auditions', href: 'https://www.getspotd.app' },
-          ].map((p) => (
-            <a
-              key={p.name}
-              href={p.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-lg p-4 flex flex-col justify-between transition-all hover:-translate-y-0.5"
-              style={{
-                background: '#faf8f5',
-                border: '1px solid #e8e0d8',
-                boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
-              }}
-            >
-              <div className="flex items-start justify-between">
-                <span className="font-syne font-extrabold" style={{ fontSize: '16px', color: '#1a1a1a' }}>
-                  {p.name}
-                </span>
-                <ArrowUpRight size={14} style={{ color: '#0d9488' }} />
-              </div>
-              <span className="font-grotesk mt-1" style={{ fontSize: '12px', color: '#6b7280' }}>
-                {p.tagline}
-              </span>
-            </a>
-          ))}
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          <a
+            href="https://www.slatr.com.au"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-lg p-4 flex flex-col justify-between transition-all hover:-translate-y-0.5"
+            style={{ background: '#faf8f5', border: '1px solid #e8e0d8', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}
+          >
+            <div className="flex items-start justify-between">
+              <span className="font-syne font-extrabold" style={{ fontSize: '16px', color: '#1a1a1a' }}>SLATR</span>
+              <ArrowUpRight size={14} style={{ color: '#0d9488' }} />
+            </div>
+            <span className="font-mono-dm uppercase mt-1" style={{ fontSize: '9px', letterSpacing: '0.1em', color: '#6b7280' }}>
+              Full Production Suite
+            </span>
+          </a>
+          <a
+            href="https://www.getspotd.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-lg p-4 flex flex-col justify-between transition-all hover:-translate-y-0.5"
+            style={{ background: '#faf8f5', border: '1px solid #e8e0d8', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}
+          >
+            <div className="flex items-start justify-between">
+              <span className="font-syne font-extrabold" style={{ fontSize: '16px', color: '#1a1a1a' }}>SPOT'D</span>
+              <ArrowUpRight size={14} style={{ color: '#0d9488' }} />
+            </div>
+            <span className="font-mono-dm uppercase mt-1" style={{ fontSize: '9px', letterSpacing: '0.1em', color: '#6b7280' }}>
+              Indie Film Directory
+            </span>
+          </a>
         </div>
+
+        <p className="font-mono-dm text-center mb-4" style={{ fontSize: '9px', letterSpacing: '0.1em', color: '#9ca3af' }}>
+          Part of the Shadow Wolves Creative Suite
+        </p>
 
         <button
           onClick={onClose}
           className="w-full font-mono-dm uppercase py-3 rounded-lg transition-colors"
-          style={{
-            fontSize: '11px',
-            letterSpacing: '0.15em',
-            color: '#6b7280',
-            background: '#f9fafb',
-            border: '1px solid #e8e0d8',
-          }}
+          style={{ fontSize: '11px', letterSpacing: '0.15em', color: '#6b7280', background: '#f9fafb', border: '1px solid #e8e0d8' }}
         >
-          Dismiss
+          Close
         </button>
       </div>
     </div>
