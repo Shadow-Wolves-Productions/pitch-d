@@ -11,8 +11,8 @@ const SLATR_FEATURES = [
 ];
 
 const SPOTD_FEATURES = [
-  'Searchable cast & crew database',
-  'Company and production listings',
+  'Searchable cast, crew and company database',
+  'Production listings',
   'IMDb-linked profile',
   'Free to join',
 ];

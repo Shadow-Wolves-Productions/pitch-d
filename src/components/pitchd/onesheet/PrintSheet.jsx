@@ -1,22 +1,11 @@
 import React from 'react';
 
-const pillStyle = {
+const metaValueStyle = {
   fontFamily: "'DM Mono', monospace",
-  fontSize: '7.5px',
+  fontSize: '8px',
   letterSpacing: '0.08em',
   textTransform: 'uppercase',
-  border: '1px solid rgba(13,148,136,0.3)',
   color: '#0d9488',
-  padding: '3px 8px',
-  borderRadius: '100px',
-  whiteSpace: 'nowrap',
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  textAlign: 'center',
-  lineHeight: '1',
-  height: 'auto',
-  boxSizing: 'border-box',
 };
 
 const sectionLabel = {
@@ -99,12 +88,12 @@ export default function PrintSheet({ data, visible }) {
         <div style={{ padding: '12px 16px 10px' }}>
           <div style={{ fontFamily: "'DM Mono', monospace", fontSize: '7px', fontWeight: 600, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#0d9488', marginBottom: '6px' }}>Genre</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '3px' }}>
-            {genres.map((g, i) => <span key={i} style={pillStyle}>{g}</span>)}
+            {genres.map((g, i) => <span key={i} style={metaValueStyle}>{g}</span>)}
           </div>
         </div>
         <div style={{ padding: '12px 16px 10px' }}>
           <div style={{ fontFamily: "'DM Mono', monospace", fontSize: '7px', fontWeight: 600, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#0d9488', marginBottom: '6px' }}>Est. Budget</div>
-          <span style={{ ...pillStyle, textAlign: 'center', lineHeight: 1.6 }}>
+          <span style={{ ...metaValueStyle, display: 'block', lineHeight: 1.6 }}>
             {estimatedBudget}{estimatedBudgetRange ? <><br />{estimatedBudgetRange}</> : null}
           </span>
         </div>
@@ -116,8 +105,8 @@ export default function PrintSheet({ data, visible }) {
         <MetaCell label="Tone" value={tone} pad />
         <div style={{ padding: '10px 16px 10px' }}>
           <div style={{ fontFamily: "'DM Mono', monospace", fontSize: '7px', fontWeight: 600, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#0d9488', marginBottom: '6px' }}>Themes</div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '3px' }}>
-            {themes.map((t, i) => <span key={i} style={pillStyle}>{t}</span>)}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+            {themes.map((t, i) => <span key={i} style={metaValueStyle}>{t}{i < themes.length - 1 ? ',' : ''}</span>)}
           </div>
         </div>
         <MetaCell label="Setting" value={setting} />
@@ -195,7 +184,7 @@ function MetaCell({ label, value, pad }) {
   return (
     <div style={{ padding: pad ? '12px 16px 10px 48px' : '12px 16px 10px' }}>
       <div style={{ fontFamily: "'DM Mono', monospace", fontSize: '7px', fontWeight: 600, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#0d9488', marginBottom: '6px' }}>{label}</div>
-      {value && <span style={pillStyle}>{value}</span>}
+      {value && <span style={metaValueStyle}>{value}</span>}
     </div>
   );
 }
