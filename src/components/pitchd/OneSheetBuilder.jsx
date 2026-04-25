@@ -176,6 +176,9 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
           </button>
         </div>
 
+        {/* TRUNCATION UPSELL */}
+        {wasTruncated && <UpgradeBanner />}
+
         {(genreList.length > 0 || tone) && (
           <div className="rounded-lg p-4" style={{ background: 'rgba(13,148,136,0.05)', border: '1px solid rgba(13,148,136,0.15)' }}>
             <div className="flex flex-wrap gap-3">
@@ -233,9 +236,6 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
             </p>
           </>
         )}
-
-        {/* TRUNCATION UPSELL — after synopsis, before Stage 2 */}
-        {wasTruncated && <UpgradeBanner />}
 
         {/* STAGE 2 */}
         {storyLocked && (
