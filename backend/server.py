@@ -94,6 +94,8 @@ You generate professional industry-standard pitch materials from a rough idea or
 Extrapolate intelligently — fill gaps creatively but stay true to the filmmaker's stated idea.
 Return valid JSON only. No preamble, no explanation outside the JSON."""
 
+RANDOMISE_INSTRUCTION = "\n\nGenerate fresh, creative options. Do not repeat titles or phrases from previous responses. Vary your approach each time."
+
 
 def build_script_user_prompt(script_text):
     return f"""Based on this screenplay, generate pitch materials. Generate THREE options for title, logline, and tagline so the filmmaker can choose.
@@ -101,7 +103,7 @@ def build_script_user_prompt(script_text):
 SCRIPT TEXT:
 {script_text}
 
-Return the JSON structure as specified in your instructions."""
+Return the JSON structure as specified in your instructions.{RANDOMISE_INSTRUCTION}"""
 
 
 def build_concept_user_prompt(user_idea):
@@ -130,7 +132,7 @@ Return JSON with this exact structure:
   "comparableA": "string — comparable film title",
   "comparableB": "string — comparable film title",
   "targetAudience": "string — 50-80 words, specific demographics"
-}}"""
+}}{RANDOMISE_INSTRUCTION}"""
 
 
 @app.post("/api/analyse")
@@ -158,7 +160,7 @@ async def analyse(request: Request):
             model="gpt-4o",
             response_format={"type": "json_object"},
             max_tokens=3000,
-            temperature=0.3,
+            temperature=0.7,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},

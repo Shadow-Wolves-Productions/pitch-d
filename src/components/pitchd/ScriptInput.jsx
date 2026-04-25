@@ -55,8 +55,8 @@ export default function ScriptInput({ text, setText, onGenerate, loading }) {
         }}
       >
         {loading ? (
-          <div className="flex flex-col items-center gap-1">
-            <span className="flex items-center gap-3">
+          <div className="flex flex-col items-center justify-center gap-1">
+            <span className="flex items-center justify-center gap-3">
               <span className="film-strip-loader w-16" />
               <span>Working our magic....</span>
             </span>

@@ -32,11 +32,7 @@ export default function PostExportPromo({ visible }) {
     <div
       id="crossPromo"
       className="no-print -mx-5 mt-10"
-      style={{
-        background: '#1a1a1a',
-        padding: '48px 24px',
-        animation: 'fadeIn 0.5s ease',
-      }}
+      style={{ background: '#1a1a1a', padding: '48px 24px', animation: 'fadeIn 0.5s ease' }}
     >
       <div className="max-w-[680px] mx-auto">
         <h2 className="font-syne font-extrabold" style={{ fontSize: '26px', color: '#ffffff', lineHeight: 1.2 }}>
@@ -46,20 +42,12 @@ export default function PostExportPromo({ visible }) {
           Don't let momentum kill your vision. Keep it going with 15% off SLATR or Spot'd.
         </p>
 
-        {/* Promo Code */}
         <button
           onClick={copy}
           className="mt-6 flex items-center justify-between rounded-lg px-5 py-3.5 w-full sm:w-auto transition-all"
-          style={{
-            background: 'rgba(13,148,136,0.12)',
-            border: '1px solid rgba(13,148,136,0.3)',
-            boxShadow: '0 0 20px rgba(13,148,136,0.2)',
-            minWidth: '280px',
-          }}
+          style={{ background: 'rgba(13,148,136,0.12)', border: '1px solid rgba(13,148,136,0.3)', boxShadow: '0 0 20px rgba(13,148,136,0.2)', minWidth: '280px' }}
         >
-          <span className="font-mono-dm uppercase" style={{ fontSize: '16px', letterSpacing: '0.25em', color: '#0d9488' }}>
-            PITCHD25
-          </span>
+          <span className="font-mono-dm uppercase" style={{ fontSize: '16px', letterSpacing: '0.25em', color: '#0d9488' }}>PITCHD25</span>
           <span className="font-mono-dm flex items-center gap-1.5" style={{ fontSize: '11px', letterSpacing: '0.1em', color: '#0d9488' }}>
             {copied ? <Check size={14} /> : <Copy size={14} />}
             {copied ? 'Copied' : 'Copy'}
@@ -69,71 +57,48 @@ export default function PostExportPromo({ visible }) {
           Use code PITCHD25 for 15% off &middot; Includes 7-day free trial
         </p>
 
-        {/* Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
-          {/* SLATR */}
-          <div
-            className="rounded-xl p-5 transition-all hover:-translate-y-1"
-            style={{
-              background: '#2a2a2a',
-              borderLeft: '3px solid #0d9488',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-            }}
-          >
-            <img src={SLATR_LOGO} alt="SLATR" style={{ height: '24px', width: 'auto', marginBottom: '10px' }} />
-            <span className="font-mono-dm uppercase block mb-2" style={{ fontSize: '8px', letterSpacing: '0.2em', color: '#0d9488' }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-8">
+          {/* SLATR — blue theme */}
+          <div className="rounded-xl p-6 transition-all hover:-translate-y-1" style={{ background: '#2a2a2a', borderLeft: '3px solid #3a69b1', boxShadow: '0 8px 32px rgba(0,0,0,0.3)' }}>
+            <img src={SLATR_LOGO} alt="SLATR" style={{ height: '72px', width: 'auto', marginBottom: '14px' }} />
+            <span className="font-mono-dm uppercase block mb-3" style={{ fontSize: '9px', letterSpacing: '0.2em', color: '#3a69b1' }}>
               Full Production Suite
             </span>
-            <h4 className="font-syne font-bold" style={{ fontSize: '16px', color: '#ffffff', lineHeight: 1.3 }}>
+            <h4 className="font-grotesk" style={{ fontSize: '18px', color: '#ffffff', lineHeight: 1.5, letterSpacing: '0.02em', fontWeight: 400 }}>
               You bring the vision.{' '}
               <span style={{ color: '#3a69b1' }}>We bring the crew.</span>
             </h4>
-            <div className="grid grid-cols-1 gap-y-1 mt-3">
+            <div className="grid grid-cols-1 gap-y-1.5 mt-4">
               {SLATR_FEATURES.slice(0, 4).map((f) => (
-                <div key={f} className="flex items-start gap-1.5">
-                  <span style={{ color: '#0d9488', fontSize: '10px', lineHeight: '16px', flexShrink: 0 }}>&#10003;</span>
-                  <span className="font-grotesk" style={{ fontSize: '10px', color: 'rgba(255,255,255,0.7)', lineHeight: '16px' }}>{f}</span>
+                <div key={f} className="flex items-start gap-2">
+                  <span style={{ color: '#3a69b1', fontSize: '11px', lineHeight: '17px', flexShrink: 0 }}>&#10003;</span>
+                  <span className="font-grotesk" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.7)', lineHeight: '17px' }}>{f}</span>
                 </div>
               ))}
             </div>
-            <a
-              href="https://www.slatr.com.au"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block mt-4 font-syne font-bold px-4 py-2 rounded-lg transition-all hover:opacity-90"
-              style={{ fontSize: '12px', background: '#0d9488', color: '#ffffff', textDecoration: 'none' }}
-            >
+            <a href="https://www.slatr.com.au" target="_blank" rel="noopener noreferrer"
+              className="inline-block mt-5 font-grotesk px-5 py-2.5 rounded-lg transition-all hover:opacity-90"
+              style={{ fontSize: '14px', letterSpacing: '0.04em', background: '#3a69b1', color: '#ffffff', textDecoration: 'none' }}>
               Get SLATR &rarr;
             </a>
           </div>
 
-          {/* SPOT'D */}
-          <div
-            className="rounded-xl p-5 transition-all hover:-translate-y-1"
-            style={{
-              background: '#2a2a2a',
-              borderLeft: '3px solid #e8fc6c',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
-            }}
-          >
-            <img src={SPOTD_LOGO} alt="SPOT'D" style={{ height: '22px', width: 'auto', marginBottom: '10px' }} />
-            <span className="font-mono-dm uppercase block mb-2" style={{ fontSize: '8px', letterSpacing: '0.2em', color: '#e8fc6c' }}>
+          {/* SPOT'D — yellow theme */}
+          <div className="rounded-xl p-6 transition-all hover:-translate-y-1" style={{ background: '#2a2a2a', borderLeft: '3px solid #e8fc6c', boxShadow: '0 8px 32px rgba(0,0,0,0.3)' }}>
+            <img src={SPOTD_LOGO} alt="SPOT'D" style={{ height: '66px', width: 'auto', marginBottom: '14px' }} />
+            <span className="font-mono-dm uppercase block mb-3" style={{ fontSize: '9px', letterSpacing: '0.2em', color: '#e8fc6c' }}>
               The Indie Film Directory
             </span>
-            <h4 className="font-syne font-bold" style={{ fontSize: '16px', color: '#ffffff', lineHeight: 1.3 }}>
+            <h4 className="font-grotesk" style={{ fontSize: '18px', color: '#ffffff', lineHeight: 1.5, letterSpacing: '0.02em', fontWeight: 400 }}>
               Cast &middot; Crew &middot; Companies. No Gatekeepers.
             </h4>
-            <p className="font-grotesk mt-2" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', lineHeight: 1.5 }}>
+            <p className="font-grotesk mt-3" style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', lineHeight: 1.6 }}>
               Search, discover, and connect with cast, crew, and companies —{' '}
               <span style={{ color: '#e8fc6c', fontWeight: 600 }}>TODAY!</span>
             </p>
-            <a
-              href="https://www.getspotd.app"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block mt-4 font-syne font-bold px-4 py-2 rounded-lg transition-all hover:opacity-90"
-              style={{ fontSize: '12px', background: '#e8fc6c', color: '#1a1a1a', textDecoration: 'none' }}
-            >
+            <a href="https://www.getspotd.app" target="_blank" rel="noopener noreferrer"
+              className="inline-block mt-5 font-grotesk px-5 py-2.5 rounded-lg transition-all hover:opacity-90"
+              style={{ fontSize: '14px', letterSpacing: '0.04em', background: '#e8fc6c', color: '#1a1a1a', textDecoration: 'none' }}>
               Get Spot'd &rarr;
             </a>
           </div>
