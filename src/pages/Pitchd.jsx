@@ -77,10 +77,7 @@ export default function Pitchd() {
         <Header />
         <StepIndicator current={step} />
 
-        {/* TRUNCATION BANNER */}
-        {result && wasTruncated && (
-          <div className="mb-8"><UpgradeBanner /></div>
-        )}
+        {/* TRUNCATION BANNER — now inside OneSheetBuilder */}
 
         {!result && (
           <>
@@ -109,6 +106,7 @@ export default function Pitchd() {
               writerEmail={writerEmail}
               attachedTalent={attachedTalent}
               onExportDone={handleExportDone}
+              wasTruncated={wasTruncated}
             />
           </div>
         )}

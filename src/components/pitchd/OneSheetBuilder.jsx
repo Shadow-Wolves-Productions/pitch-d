@@ -3,6 +3,7 @@ import { RotateCcw, Lock, Download, Unlock, CheckCircle, ChevronRight, Plus, X }
 import SelectableCard from './onesheet/SelectableCard';
 import PrintSheet from './onesheet/PrintSheet';
 import SectionLabel from './SectionLabel';
+import UpgradeBanner from './UpgradeBanner';
 
 const inputStyle = {
   fontFamily: 'var(--font-grotesk)', fontSize: '14px', color: '#1a1a1a',
@@ -34,7 +35,7 @@ const BUDGET_RANGES = {
 
 const CREW_ROLES = ['Director', 'Composer', 'DOP', 'Producer'];
 
-export default function OneSheetBuilder({ data, onReset, writerName, writerPhone, writerEmail, attachedTalent: initAttached, onExportDone }) {
+export default function OneSheetBuilder({ data, onReset, writerName, writerPhone, writerEmail, attachedTalent: initAttached, onExportDone, wasTruncated = false }) {
   const {
     primaryTitle, altTitles = [], loglines = [], taglines = [],
     synopsis: rawSynopsis = '', genre = [], tone = '', themes = [],
@@ -232,6 +233,9 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
             </p>
           </>
         )}
+
+        {/* TRUNCATION UPSELL — after synopsis, before Stage 2 */}
+        {wasTruncated && <UpgradeBanner />}
 
         {/* STAGE 2 */}
         {storyLocked && (
