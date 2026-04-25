@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
 const inputStyle = {
@@ -45,11 +45,16 @@ function Field({ label, value, onChange, placeholder }) {
 
 export default function ProjectDetails({ writerName, setWriterName, writerPhone, setWriterPhone, writerEmail, setWriterEmail, attachedTalent, setAttachedTalent, collapsed }) {
   const [open, setOpen] = useState(!collapsed);
+  const [userToggled, setUserToggled] = useState(false);
+
+  useEffect(() => {
+    if (!userToggled && collapsed) setOpen(false);
+  }, [collapsed, userToggled]);
 
   return (
     <div className="no-print mb-6">
       <button
-        onClick={() => setOpen(!open)}
+        onClick={() => { setOpen(!open); setUserToggled(true); }}
         className="w-full flex items-center justify-between py-2 transition-colors"
       >
         <span className="font-mono-dm uppercase" style={{ fontSize: '11px', letterSpacing: '0.15em', color: '#6b7280' }}>

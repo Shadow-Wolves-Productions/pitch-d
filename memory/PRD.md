@@ -3,22 +3,24 @@
 ## Architecture
 - Frontend: Vite+React → `/app/dist/` → `serve` on port 3000
 - Backend: FastAPI `/app/backend/server.py` on port 8001
-- AI: OpenAI GPT-4o, dual-mode (script/concept)
+- AI: OpenAI GPT-4o, dual-mode (script/concept), Dr. Scrypto prompt
 
 ## Implemented
-- Full deployment, Anthropic→OpenAI, PDF blob download
-- Bebas Neue fonts, OpenAI SDK dual-mode prompts
-- Genre/tone/setting metadata, 100K truncation + upgrade banner
-- Complete copy rewrite (filmmaker-to-filmmaker tone)
-- Brand logos: PITCH'D, SLATR (black transparent), SPOT'D (black-electric)
-- Ecosystem promo: SLATR + SPOT'D cards with logos
-- PromoModal: SLATR/SPOT'D logos in post-export modal
+- Full deployment, PDF export via window.print()
+- Bebas Neue fonts, visual depth (card shadows, hover lifts, transitions)
+- **Project Details**: Collapsible pre-generate section (writer name, phone, email, attachments)
+- **Stage 1 — Lock Story Assets**: Title/logline/tagline/synopsis selection with AI Pick badge
+- **Stage 2 — Production Details**: Comparables (It's ___ meets ___), themes, format, budget tier/range, setting, period, target audience, attachments
+- **New AI prompt**: Dr. Scrypto with genre array, comparableA/B, themes, format, estimatedBudget, targetAudience
+- **New PDF template**: White header, teal title block, writer strip, meta rows, comparables, logline, tagline, synopsis, target audience, attached talent
+- **Post-export promo**: Dark section (#1a1a1a) with PITCHD25 code, SLATR/SPOT'D cards, fadeIn animation
+- 100K truncation with SLATR upgrade banner
+- Brand logos (PITCH'D, SLATR, SPOT'D)
 
-## Logo Assets
-- PITCH'D: https://customer-assets.emergentagent.com/job_pitch-d-preview/artifacts/i1ty4hvl_Pitch%27d%20Logo%20-%20Transparent.png
-- SLATR Black: https://customer-assets.emergentagent.com/job_pitch-d-preview/artifacts/1vct55ke_Slatr_Logo_Black_Transparent.png
-- SLATR Grey: https://customer-assets.emergentagent.com/job_pitch-d-preview/artifacts/7r6s4gn9_Slatr_Logo_Grey_Transparent.png
-- SPOT'D: https://customer-assets.emergentagent.com/job_pitch-d-preview/artifacts/0979arut_Spot%27d%20Logo%20-%20Black-Electric_BIG.png
-
-## Backlog
-- P2: DNS for pitchd.shadowwolvesproductions.com.au
+## Key Files
+- `/app/backend/server.py` - Dr. Scrypto prompt, all new JSON fields
+- `/app/src/pages/Pitchd.jsx` - Main page, ProjectDetails, PostExportPromo
+- `/app/src/components/pitchd/ProjectDetails.jsx` - Writer details form
+- `/app/src/components/pitchd/OneSheetBuilder.jsx` - Stage 1 + Stage 2
+- `/app/src/components/pitchd/onesheet/PrintSheet.jsx` - New PDF template
+- `/app/src/components/pitchd/PostExportPromo.jsx` - Dark cross-promo section
