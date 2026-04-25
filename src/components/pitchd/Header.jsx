@@ -6,13 +6,19 @@ export default function Header() {
     <header className="no-print pt-8 pb-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <Logo size={80} />
+          <Logo size={72} />
           <h1
             className="font-syne font-bold leading-tight mt-6"
             style={{ fontSize: '22px', color: '#1a1a1a' }}
           >
             Your script. Pitched in minutes.
           </h1>
+          <div
+            className="font-mono-dm uppercase mt-2"
+            style={{ fontSize: '9px', letterSpacing: '0.2em', color: '#9ca3af' }}
+          >
+            A Shadow Wolves Productions Tool
+          </div>
         </div>
         <p
           className="font-marker shrink-0 mt-4"

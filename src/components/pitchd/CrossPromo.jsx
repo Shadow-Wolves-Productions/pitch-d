@@ -8,10 +8,6 @@ const SLATR_FEATURES = [
   'Bechdel and representation analysis',
   'Draft comparison',
   'Budget tier generation',
-  'Character profiles',
-  'Scene breakdowns',
-  'Casting suggestions',
-  'Comparable films',
 ];
 
 const SPOTD_FEATURES = [
@@ -49,7 +45,7 @@ export default function EcosystemPromo() {
           <p className="font-grotesk mt-3 leading-relaxed" style={{ fontSize: '14px', color: '#6b7280' }}>
             From script to screen — and everything in between. Guided by your own AI crew, SLATR is our complete production suite built for indie filmmakers.
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1.5 mt-4">
+          <div className="grid grid-cols-1 gap-y-1.5 mt-4">
             {SLATR_FEATURES.map((f) => (
               <div key={f} className="flex items-start gap-2">
                 <span style={{ color: '#3a69b1', fontSize: '12px', lineHeight: '18px', flexShrink: 0 }}>&#10003;</span>

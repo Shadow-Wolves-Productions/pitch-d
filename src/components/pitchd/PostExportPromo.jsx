@@ -9,10 +9,6 @@ const SLATR_FEATURES = [
   'Bechdel and representation analysis',
   'Draft comparison',
   'Budget tier generation',
-  'Character profiles',
-  'Scene breakdowns',
-  'Casting suggestions',
-  'Comparable films',
 ];
 
 const SPOTD_FEATURES = [
@@ -65,7 +61,7 @@ export default function PostExportPromo({ visible }) {
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-8">
-          {/* SLATR */}
+          {/* SLATR — 4 ticks, single column */}
           <div className="rounded-xl p-6 transition-all hover:-translate-y-1" style={{ background: '#2a2a2a', borderLeft: '3px solid #3a69b1', boxShadow: '0 8px 32px rgba(0,0,0,0.3)' }}>
             <img src={SLATR_LOGO} alt="SLATR" style={{ height: '72px', width: 'auto', marginBottom: '14px' }} />
             <span className="font-mono-dm uppercase block mb-3" style={{ fontSize: '9px', letterSpacing: '0.2em', color: '#3a69b1' }}>
@@ -75,11 +71,11 @@ export default function PostExportPromo({ visible }) {
               You bring the vision.{' '}
               <span style={{ color: '#3a69b1' }}>We bring the crew.</span>
             </h4>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 mt-4">
+            <div className="space-y-1.5 mt-4">
               {SLATR_FEATURES.map((f) => (
-                <div key={f} className="flex items-start gap-1.5">
+                <div key={f} className="flex items-start gap-2">
                   <span style={{ color: '#3a69b1', fontSize: '11px', lineHeight: '17px', flexShrink: 0 }}>&#10003;</span>
-                  <span className="font-grotesk" style={{ fontSize: '10px', color: 'rgba(255,255,255,0.7)', lineHeight: '17px' }}>{f}</span>
+                  <span className="font-grotesk" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.7)', lineHeight: '17px' }}>{f}</span>
                 </div>
               ))}
             </div>
@@ -90,7 +86,7 @@ export default function PostExportPromo({ visible }) {
             </a>
           </div>
 
-          {/* SPOT'D */}
+          {/* SPOT'D — 4 ticks, single column */}
           <div className="rounded-xl p-6 transition-all hover:-translate-y-1" style={{ background: '#2a2a2a', borderLeft: '3px solid #e8fc6c', boxShadow: '0 8px 32px rgba(0,0,0,0.3)' }}>
             <img src={SPOTD_LOGO} alt="SPOT'D" style={{ height: '72px', width: 'auto', marginBottom: '14px' }} />
             <span className="font-mono-dm uppercase block mb-3" style={{ fontSize: '9px', letterSpacing: '0.2em', color: '#e8fc6c' }}>
@@ -99,11 +95,11 @@ export default function PostExportPromo({ visible }) {
             <h4 className="font-grotesk" style={{ fontSize: '18px', color: '#ffffff', lineHeight: 1.5, letterSpacing: '0.02em', fontWeight: 400 }}>
               Cast &middot; Crew &middot; Companies. No Gatekeepers.
             </h4>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 mt-4">
+            <div className="space-y-1.5 mt-4">
               {SPOTD_FEATURES.map((f) => (
-                <div key={f} className="flex items-start gap-1.5">
+                <div key={f} className="flex items-start gap-2">
                   <span style={{ color: '#e8fc6c', fontSize: '11px', lineHeight: '17px', flexShrink: 0 }}>&#10003;</span>
-                  <span className="font-grotesk" style={{ fontSize: '10px', color: 'rgba(255,255,255,0.7)', lineHeight: '17px' }}>{f}</span>
+                  <span className="font-grotesk" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.7)', lineHeight: '17px' }}>{f}</span>
                 </div>
               ))}
             </div>

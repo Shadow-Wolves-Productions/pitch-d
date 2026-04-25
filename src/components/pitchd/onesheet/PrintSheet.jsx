@@ -7,13 +7,16 @@ const pillStyle = {
   textTransform: 'uppercase',
   border: '1px solid rgba(13,148,136,0.3)',
   color: '#0d9488',
-  padding: '2px 7px',
+  padding: '3px 8px',
   borderRadius: '100px',
   whiteSpace: 'nowrap',
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
   textAlign: 'center',
+  lineHeight: '1',
+  height: 'auto',
+  boxSizing: 'border-box',
 };
 
 const sectionLabel = {
