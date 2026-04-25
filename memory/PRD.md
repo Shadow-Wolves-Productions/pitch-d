@@ -3,24 +3,17 @@
 ## Architecture
 - Frontend: Vite+React → `/app/dist/` → `serve` on port 3000
 - Backend: FastAPI `/app/backend/server.py` on port 8001
-- AI: OpenAI GPT-4o, dual-mode (script/concept), Dr. Scrypto prompt
+- AI: OpenAI GPT-4o, temperature 0.7, Dr. Scrypto prompt
 
-## Implemented
-- Full deployment, PDF export via window.print()
-- Bebas Neue fonts, visual depth (card shadows, hover lifts, transitions)
-- **Project Details**: Collapsible pre-generate section (writer name, phone, email, attachments)
-- **Stage 1 — Lock Story Assets**: Title/logline/tagline/synopsis selection with AI Pick badge
-- **Stage 2 — Production Details**: Comparables (It's ___ meets ___), themes, format, budget tier/range, setting, period, target audience, attachments
-- **New AI prompt**: Dr. Scrypto with genre array, comparableA/B, themes, format, estimatedBudget, targetAudience
-- **New PDF template**: White header, teal title block, writer strip, meta rows, comparables, logline, tagline, synopsis, target audience, attached talent
-- **Post-export promo**: Dark section (#1a1a1a) with PITCHD25 code, SLATR/SPOT'D cards, fadeIn animation
+## All Implemented Features
+- Logo: Official PITCH'D brand image at 2x size, "paste it. pitch it." on right
+- Project Details: Collapsible pre-generate section (writer name/phone/email/attachments)
+- Stage 1: Lock Story Assets (title/logline/tagline/synopsis selection)
+- Stage 2: Production Details (comparables, themes, format, budget tier+range dropdowns, setting, period, target audience, structured attachments with Dir/Composer/DOP/Producer/Cast+Add Cast)
+- Budget Range: Dropdown dependent on Budget Tier (Micro: Sweat Equity to $50K, Studio: $120M+)
+- PDF Export: jsPDF CDN + html2canvas (auto-download, no print dialog)
+- Post-Export Promo: Dark section with SLATR (blue #3a69b1 theme, 72px logo) + SPOT'D (yellow #e8fc6c, 66px logo)
 - 100K truncation with SLATR upgrade banner
-- Brand logos (PITCH'D, SLATR, SPOT'D)
-
-## Key Files
-- `/app/backend/server.py` - Dr. Scrypto prompt, all new JSON fields
-- `/app/src/pages/Pitchd.jsx` - Main page, ProjectDetails, PostExportPromo
-- `/app/src/components/pitchd/ProjectDetails.jsx` - Writer details form
-- `/app/src/components/pitchd/OneSheetBuilder.jsx` - Stage 1 + Stage 2
-- `/app/src/components/pitchd/onesheet/PrintSheet.jsx` - New PDF template
-- `/app/src/components/pitchd/PostExportPromo.jsx` - Dark cross-promo section
+- Temperature 0.7 + randomisation instruction for varied titles
+- Dr. Scrypto system prompt (word-for-word as specified)
+- Visual depth: Card shadows, hover lifts, transitions
