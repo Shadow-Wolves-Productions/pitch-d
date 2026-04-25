@@ -5,7 +5,7 @@ const metaValueStyle = {
   fontSize: '8px',
   letterSpacing: '0.08em',
   textTransform: 'uppercase',
-  color: '#0d9488',
+  color: '#1f2937',
 };
 
 const sectionLabel = {
@@ -58,7 +58,7 @@ export default function PrintSheet({ data, visible }) {
             A Shadow Wolves Productions Tool
           </div>
         </div>
-        <div style={{ fontFamily: "'DM Mono', monospace", fontSize: '7.5px', letterSpacing: '0.15em', textTransform: 'uppercase', border: '1px solid rgba(13,148,136,0.35)', color: '#0d9488', padding: '5px 12px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+        <div style={{ fontFamily: "'DM Mono', monospace", fontSize: '7.5px', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#0d9488', padding: '5px 0' }}>
           Development One Sheet
         </div>
       </div>
@@ -87,8 +87,8 @@ export default function PrintSheet({ data, visible }) {
         <MetaCell label="Format" value={filmFormat} pad />
         <div style={{ padding: '12px 16px 10px' }}>
           <div style={{ fontFamily: "'DM Mono', monospace", fontSize: '7px', fontWeight: 600, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#0d9488', marginBottom: '6px' }}>Genre</div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '3px' }}>
-            {genres.map((g, i) => <span key={i} style={metaValueStyle}>{g}</span>)}
+          <div>
+            <span style={metaValueStyle}>{genres.join(', ')}</span>
           </div>
         </div>
         <div style={{ padding: '12px 16px 10px' }}>
@@ -106,7 +106,7 @@ export default function PrintSheet({ data, visible }) {
         <div style={{ padding: '10px 16px 10px' }}>
           <div style={{ fontFamily: "'DM Mono', monospace", fontSize: '7px', fontWeight: 600, letterSpacing: '0.3em', textTransform: 'uppercase', color: '#0d9488', marginBottom: '6px' }}>Themes</div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-            {themes.map((t, i) => <span key={i} style={metaValueStyle}>{t}{i < themes.length - 1 ? ',' : ''}</span>)}
+            <span style={metaValueStyle}>{themes.join(', ')}</span>
           </div>
         </div>
         <MetaCell label="Setting" value={setting} />
