@@ -177,7 +177,6 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
         </div>
 
         {/* TRUNCATION UPSELL */}
-        {wasTruncated && <UpgradeBanner />}
 
         {(genreList.length > 0 || tone) && (
           <div className="rounded-lg p-4" style={{ background: 'rgba(13,148,136,0.05)', border: '1px solid rgba(13,148,136,0.15)' }}>

@@ -98,6 +98,9 @@ export default function Pitchd() {
 
         {result && (
           <div ref={builderRef} className="mt-6 mb-8">
+            {wasTruncated && (
+              <div className="mb-8"><UpgradeBanner /></div>
+            )}
             <OneSheetBuilder
               data={result}
               onReset={handleReset}
