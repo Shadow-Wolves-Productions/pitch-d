@@ -1,10 +1,11 @@
 import React, { useState, useRef } from 'react';
 import Header from '@/components/pitchd/Header';
 import StepIndicator from '@/components/pitchd/StepIndicator';
+import ProjectDetails from '@/components/pitchd/ProjectDetails';
 import ScriptInput from '@/components/pitchd/ScriptInput';
 import OneSheetBuilder from '@/components/pitchd/OneSheetBuilder';
 import UpgradeBanner from '@/components/pitchd/UpgradeBanner';
-import EcosystemPromo from '@/components/pitchd/CrossPromo';
+import PostExportPromo from '@/components/pitchd/PostExportPromo';
 import Footer from '@/components/pitchd/Footer';
 import { analyseScript, TRUNCATE_LIMIT } from '@/lib/pitchdApi';
 
@@ -14,7 +15,17 @@ export default function Pitchd() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
   const [wasTruncated, setWasTruncated] = useState(false);
+  const [showPostExport, setShowPostExport] = useState(false);
+
+  // Project details
+  const [writerName, setWriterName] = useState('');
+  const [writerPhone, setWriterPhone] = useState('');
+  const [writerEmail, setWriterEmail] = useState('');
+  const [attachedTalent, setAttachedTalent] = useState('');
+
   const builderRef = useRef(null);
+  const promoRef = useRef(null);
+  const hasStartedTyping = text.length > 0;
 
   const step = result ? 3 : loading ? 2 : 1;
 
@@ -49,7 +60,15 @@ export default function Pitchd() {
     setError('');
     setText('');
     setWasTruncated(false);
+    setShowPostExport(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleExportDone = () => {
+    setShowPostExport(true);
+    setTimeout(() => {
+      promoRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
   };
 
   return (
@@ -58,37 +77,49 @@ export default function Pitchd() {
         <Header />
         <StepIndicator current={step} />
 
-        {/* TRUNCATION BANNER — under step indicators, before results */}
+        {/* TRUNCATION BANNER */}
         {result && wasTruncated && (
-          <div className="mb-8">
-            <UpgradeBanner />
-          </div>
+          <div className="mb-8"><UpgradeBanner /></div>
         )}
 
         {!result && (
-          <ScriptInput
-            text={text}
-            setText={setText}
-            onGenerate={handleGenerate}
-            loading={loading}
-          />
+          <>
+            <ProjectDetails
+              writerName={writerName} setWriterName={setWriterName}
+              writerPhone={writerPhone} setWriterPhone={setWriterPhone}
+              writerEmail={writerEmail} setWriterEmail={setWriterEmail}
+              attachedTalent={attachedTalent} setAttachedTalent={setAttachedTalent}
+              collapsed={hasStartedTyping}
+            />
+            <ScriptInput text={text} setText={setText} onGenerate={handleGenerate} loading={loading} />
+          </>
         )}
 
         {error && !loading && (
-          <p className="no-print font-grotesk mt-4" style={{ fontSize: '14px', color: '#dc2626' }}>
-            {error}
-          </p>
+          <p className="no-print font-grotesk mt-4" style={{ fontSize: '14px', color: '#dc2626' }}>{error}</p>
         )}
 
         {result && (
           <div ref={builderRef} className="mt-6 mb-8">
-            <OneSheetBuilder data={result} onReset={handleReset} />
+            <OneSheetBuilder
+              data={result}
+              onReset={handleReset}
+              writerName={writerName}
+              writerPhone={writerPhone}
+              writerEmail={writerEmail}
+              attachedTalent={attachedTalent}
+              onExportDone={handleExportDone}
+            />
           </div>
         )}
+      </div>
 
-        {/* Ecosystem promo — after results */}
-        {result && <EcosystemPromo />}
+      {/* Post-export promo — full bleed dark section */}
+      <div ref={promoRef}>
+        <PostExportPromo visible={showPostExport} />
+      </div>
 
+      <div className="max-w-[680px] mx-auto px-5">
         <Footer />
       </div>
     </div>

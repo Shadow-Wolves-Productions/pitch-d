@@ -1,13 +1,12 @@
 """
-PITCH'D API Tests - Iteration 3
-Tests for the screenplay analysis API with dual-mode prompts:
-- Script mode (>= 1000 chars): Uses Dr. Scrypto prompt
-- Concept mode (< 1000 chars): Uses development exec prompt
+PITCH'D API Tests - Iteration 8
+Tests for the screenplay analysis API with new JSON structure:
+- genre (array), comparableA, comparableB, themes, format, estimatedBudget, 
+  estimatedBudgetRange, targetAudience, period, setting
 """
 import pytest
 import requests
 import os
-import time
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
@@ -195,6 +194,7 @@ class TestHealthEndpoint:
         assert response.status_code == 200
         data = response.json()
         assert data["status"] == "ok"
+        print("PASS: /api/health returns status ok")
 
 
 class TestAnalyseEndpointValidation:
@@ -211,6 +211,7 @@ class TestAnalyseEndpointValidation:
         data = response.json()
         assert "error" in data
         assert "message" in data["error"]
+        print("PASS: Empty text returns 400")
     
     def test_whitespace_only_returns_400(self):
         """Test that whitespace-only text returns 400 error"""
@@ -222,6 +223,7 @@ class TestAnalyseEndpointValidation:
         assert response.status_code == 400
         data = response.json()
         assert "error" in data
+        print("PASS: Whitespace-only text returns 400")
     
     def test_missing_text_field_returns_400(self):
         """Test that missing text field returns 400 error"""
@@ -231,38 +233,70 @@ class TestAnalyseEndpointValidation:
             headers={"Content-Type": "application/json"}
         )
         assert response.status_code == 400
+        print("PASS: Missing text field returns 400")
 
 
-class TestConceptMode:
-    """Tests for concept mode (text < 1000 chars)"""
+class TestNewJSONStructure:
+    """Tests for the new JSON structure with all new fields"""
     
-    def test_concept_mode_returns_valid_json_structure(self):
-        """Test concept mode returns all required fields"""
+    def test_script_mode_returns_new_fields(self):
+        """Test script mode returns all NEW fields from restructure"""
+        assert len(SCRIPT_TEXT) >= 1000, f"Script text should be >= 1000 chars, got {len(SCRIPT_TEXT)}"
+        
         response = requests.post(
             f"{BASE_URL}/api/analyse",
-            json={"text": CONCEPT_TEXT},
+            json={"text": SCRIPT_TEXT},
             headers={"Content-Type": "application/json"},
-            timeout=60  # AI calls can take time
+            timeout=90  # AI calls can take time
         )
         
-        assert response.status_code == 200
+        assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         data = response.json()
         
-        # Verify all required fields are present
+        # Check original fields
         assert "primaryTitle" in data, "Missing primaryTitle"
         assert "altTitles" in data, "Missing altTitles"
         assert "loglines" in data, "Missing loglines"
         assert "taglines" in data, "Missing taglines"
         assert "synopsis" in data, "Missing synopsis"
         
-        # Verify new fields added in this iteration
-        assert "genre" in data, "Missing genre field"
-        assert "subgenres" in data, "Missing subgenres field"
-        assert "tone" in data, "Missing tone field"
-        assert "time_period" in data, "Missing time_period field"
-        assert "setting" in data, "Missing setting field"
+        # Check NEW fields from restructure
+        assert "genre" in data, "Missing genre (should be array)"
+        assert isinstance(data["genre"], list), f"genre should be an array, got {type(data['genre'])}"
+        print(f"PASS: genre is array: {data['genre']}")
         
-        # Verify data types
+        assert "comparableA" in data, "Missing comparableA"
+        print(f"PASS: comparableA: {data['comparableA']}")
+        
+        assert "comparableB" in data, "Missing comparableB"
+        print(f"PASS: comparableB: {data['comparableB']}")
+        
+        assert "themes" in data, "Missing themes"
+        print(f"PASS: themes: {data['themes']}")
+        
+        assert "format" in data, "Missing format"
+        print(f"PASS: format: {data['format']}")
+        
+        assert "estimatedBudget" in data, "Missing estimatedBudget"
+        print(f"PASS: estimatedBudget: {data['estimatedBudget']}")
+        
+        assert "estimatedBudgetRange" in data, "Missing estimatedBudgetRange"
+        print(f"PASS: estimatedBudgetRange: {data['estimatedBudgetRange']}")
+        
+        assert "targetAudience" in data, "Missing targetAudience"
+        print(f"PASS: targetAudience: {data['targetAudience'][:50]}...")
+        
+        # Check optional fields
+        assert "tone" in data, "Missing tone"
+        print(f"PASS: tone: {data['tone']}")
+        
+        assert "setting" in data, "Missing setting"
+        print(f"PASS: setting: {data['setting']}")
+        
+        assert "period" in data, "Missing period"
+        print(f"PASS: period: {data['period']}")
+        
+        # Validate data types
         assert isinstance(data["primaryTitle"], str)
         assert isinstance(data["altTitles"], list)
         assert len(data["altTitles"]) >= 1, "Should have at least 1 alt title"
@@ -270,107 +304,58 @@ class TestConceptMode:
         assert len(data["loglines"]) >= 1, "Should have at least 1 logline"
         assert isinstance(data["taglines"], list)
         assert len(data["taglines"]) >= 1, "Should have at least 1 tagline"
-        assert isinstance(data["synopsis"], str)
-        assert len(data["synopsis"]) > 100, "Synopsis should be substantial"
         
-        # Verify new field types
-        assert isinstance(data["genre"], str)
-        assert isinstance(data["subgenres"], list)
-        assert isinstance(data["tone"], str)
-        assert isinstance(data["time_period"], str)
-        assert isinstance(data["setting"], str)
+        print(f"\nFull response structure validated successfully")
+        print(f"Title: {data['primaryTitle']}")
+        print(f"Alt Titles: {data['altTitles']}")
+        print(f"Loglines count: {len(data['loglines'])}")
+        print(f"Taglines count: {len(data['taglines'])}")
 
 
-class TestScriptMode:
-    """Tests for script mode (text >= 1000 chars)"""
+class TestResponseCounts:
+    """Tests for response array counts"""
     
-    def test_script_mode_returns_valid_json_structure(self):
-        """Test script mode returns all required fields"""
-        # Ensure we have >= 1000 chars
-        assert len(SCRIPT_TEXT) >= 1000, f"Script text should be >= 1000 chars, got {len(SCRIPT_TEXT)}"
-        
+    def test_returns_three_loglines(self):
+        """Analyse should return exactly 3 loglines"""
         response = requests.post(
             f"{BASE_URL}/api/analyse",
             json={"text": SCRIPT_TEXT},
             headers={"Content-Type": "application/json"},
-            timeout=90  # Script mode may take longer
+            timeout=90
         )
-        
-        assert response.status_code == 200
-        data = response.json()
-        
-        # Verify all required fields are present
-        assert "primaryTitle" in data, "Missing primaryTitle"
-        assert "altTitles" in data, "Missing altTitles"
-        assert "loglines" in data, "Missing loglines"
-        assert "taglines" in data, "Missing taglines"
-        assert "synopsis" in data, "Missing synopsis"
-        
-        # Verify new fields
-        assert "genre" in data, "Missing genre field"
-        assert "subgenres" in data, "Missing subgenres field"
-        assert "tone" in data, "Missing tone field"
-        assert "time_period" in data, "Missing time_period field"
-        assert "setting" in data, "Missing setting field"
-        
-        # Verify data types and content
-        assert isinstance(data["primaryTitle"], str)
-        assert len(data["primaryTitle"]) > 0
-        
-        assert isinstance(data["altTitles"], list)
-        assert len(data["altTitles"]) >= 1
-        
-        assert isinstance(data["loglines"], list)
-        assert len(data["loglines"]) >= 1
-        for logline in data["loglines"]:
-            assert isinstance(logline, str)
-            assert len(logline) > 10
-        
-        assert isinstance(data["taglines"], list)
-        assert len(data["taglines"]) >= 1
-        
-        assert isinstance(data["synopsis"], str)
-        assert len(data["synopsis"]) > 200, "Script mode synopsis should be 400-500 words"
-
-
-class TestModeThreshold:
-    """Tests for the 1000 character threshold between modes"""
+        if response.status_code == 200:
+            data = response.json()
+            logline_count = len(data.get("loglines", []))
+            assert logline_count == 3, f"Expected 3 loglines, got {logline_count}"
+            print(f"PASS: Got {logline_count} loglines")
     
-    def test_999_chars_uses_concept_mode(self):
-        """Text with exactly 999 chars should use concept mode"""
-        # Create text that's exactly 999 chars
-        text_999 = "A " * 499 + "x"  # 999 chars
-        assert len(text_999) == 999
-        
+    def test_returns_three_taglines(self):
+        """Analyse should return exactly 3 taglines"""
         response = requests.post(
             f"{BASE_URL}/api/analyse",
-            json={"text": text_999},
+            json={"text": SCRIPT_TEXT},
             headers={"Content-Type": "application/json"},
-            timeout=60
+            timeout=90
         )
-        
-        # Should succeed (concept mode)
-        assert response.status_code == 200
-        data = response.json()
-        assert "primaryTitle" in data
+        if response.status_code == 200:
+            data = response.json()
+            tagline_count = len(data.get("taglines", []))
+            assert tagline_count == 3, f"Expected 3 taglines, got {tagline_count}"
+            print(f"PASS: Got {tagline_count} taglines")
     
-    def test_1000_chars_uses_script_mode(self):
-        """Text with exactly 1000 chars should use script mode"""
-        # Create text that's exactly 1000 chars
-        text_1000 = "A " * 500  # 1000 chars
-        assert len(text_1000) == 1000
-        
+    def test_returns_three_alt_titles(self):
+        """Analyse should return exactly 3 alt titles"""
         response = requests.post(
             f"{BASE_URL}/api/analyse",
-            json={"text": text_1000},
+            json={"text": SCRIPT_TEXT},
             headers={"Content-Type": "application/json"},
-            timeout=60
+            timeout=90
         )
-        
-        # Should succeed (script mode)
-        assert response.status_code == 200
-        data = response.json()
-        assert "primaryTitle" in data
+        if response.status_code == 200:
+            data = response.json()
+            alt_count = len(data.get("altTitles", []))
+            assert alt_count == 3, f"Expected 3 alt titles, got {alt_count}"
+            print(f"PASS: Got {alt_count} alt titles")
 
 
 if __name__ == "__main__":

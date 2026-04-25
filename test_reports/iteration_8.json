@@ -1,0 +1,112 @@
+{
+  "summary": "Completed comprehensive testing of PITCH'D major restructure (iteration 8). All core features working: Project Details section, Stage 1 (Lock Story Assets), Stage 2 (Production Details), Export via window.print(), and Post-Export Promo section.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "ProjectDetails.jsx",
+        "issue": "collapsed prop only used for initial state - does not react to hasStartedTyping changes. Component uses useState(!collapsed) but doesn't update when collapsed prop changes.",
+        "selector": "ProjectDetails component",
+        "priority": "LOW"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_pitchd_api.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "OPTIONAL: Fix ProjectDetails collapse behavior - add useEffect to respond to collapsed prop changes"
+  ],
+  "critical_code_review_comments": [
+    "ProjectDetails.jsx line 47: useState(!collapsed) only sets initial state, should use useEffect to sync with prop changes",
+    "All other features implemented correctly per requirements"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_pitchd_api.py"
+  ],
+  "success_rate": {
+    "backend": "100% (8/8 tests passed)",
+    "frontend": "95%"
+  },
+  "test_credentials": "None required - no authentication in this app",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Iteration 8 verified major restructure. Key features tested: Project Details (4 fields in 2x2 grid), Stage 1 (title/logline/tagline/synopsis selection with Lock Story Assets button), Stage 2 (Production Details with comparables, themes, format, budget, setting, period, target audience, attachments), Export One Sheet (window.print()), Post-Export Promo (dark section with PITCHD25 code, SLATR/SPOT'D cards). Backend returns new JSON fields: genre (array), comparableA, comparableB, themes, format, estimatedBudget, estimatedBudgetRange, targetAudience, period, setting.",
+  "features_tested": {
+    "project_details_section": {
+      "visible_on_homepage": "PASS",
+      "writer_name_field": "PASS",
+      "writer_phone_field": "PASS",
+      "writer_email_field": "PASS",
+      "notable_attachments_field": "PASS",
+      "2x2_grid_layout": "PASS",
+      "collapse_on_typing": "PARTIAL - initial state works but doesn't react to prop changes"
+    },
+    "generate_flow": {
+      "200_char_minimum": "PASS",
+      "good_to_go_indicator": "PASS",
+      "lets_do_it_button": "PASS",
+      "loading_state": "PASS"
+    },
+    "stage1_story_assets": {
+      "title_section": "PASS - 'Title — pick the one that fits'",
+      "logline_section": "PASS - 'Logline — pick the angle that lands'",
+      "tagline_section": "PASS - 'Tagline — pick the line that sticks'",
+      "synopsis_section": "PASS - 'Synopsis — edit until it reads right'",
+      "lock_button_text": "PASS - 'Lock Story Assets' (not 'Lock & Export')",
+      "ai_pick_badge": "PASS - teal pill on primary title",
+      "genre_array": "PASS - displays as array (e.g., Thriller, Drama)",
+      "tone_display": "PASS"
+    },
+    "stage2_production_details": {
+      "appears_after_lock": "PASS",
+      "header_text": "PASS - 'Almost there. Add the finishing touches.'",
+      "comparables_format": "PASS - 'It's ___ meets ___'",
+      "themes_field": "PASS - pre-populated from AI",
+      "format_dropdown": "PASS - Feature Film, Short Film, etc.",
+      "budget_tier_dropdown": "PASS - Micro, Low, Low-Mid, etc.",
+      "budget_range_field": "PASS - pre-populated",
+      "setting_field": "PASS - pre-populated",
+      "period_field": "PASS - pre-populated",
+      "target_audience_field": "PASS - pre-populated",
+      "notable_attachments_field": "PASS"
+    },
+    "export_functionality": {
+      "export_button_text": "PASS - 'Export One Sheet'",
+      "window_print_trigger": "PASS"
+    },
+    "post_export_promo": {
+      "dark_background": "PASS - #1a1a1a",
+      "title": "PASS - 'You're on a roll. Don't stop now.'",
+      "pitchd25_code": "PASS",
+      "copy_button": "PASS",
+      "slatr_card": "PASS - 'Full Production Suite'",
+      "spotd_card": "PASS - 'The Indie Film Directory'",
+      "get_slatr_button": "PASS",
+      "get_spotd_button": "PASS"
+    },
+    "backend_api": {
+      "health_endpoint": "PASS",
+      "analyse_endpoint": "PASS",
+      "new_json_fields": {
+        "genre_array": "PASS",
+        "comparableA": "PASS",
+        "comparableB": "PASS",
+        "themes": "PASS",
+        "format": "PASS",
+        "estimatedBudget": "PASS",
+        "estimatedBudgetRange": "PASS",
+        "targetAudience": "PASS",
+        "period": "PASS",
+        "setting": "PASS"
+      }
+    }
+  }
+}

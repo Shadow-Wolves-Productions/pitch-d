@@ -66,7 +66,28 @@
     background: var(--pitchd-surface);
     border: 1px solid var(--pitchd-border);
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+    transition: all 0.2s ease;
+  }
+
+  .pitchd-card:hover {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14), 0 2px 8px rgba(0, 0, 0, 0.06);
+    transform: translateY(-2px);
+  }
+
+  .pitchd-card-base {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+    transition: all 0.2s ease;
+  }
+
+  .pitchd-btn-primary {
+    box-shadow: 0 4px 16px rgba(13, 148, 136, 0.4);
+    transition: all 0.2s ease;
+  }
+
+  .pitchd-btn-primary:hover:not(:disabled) {
+    box-shadow: 0 8px 24px rgba(13, 148, 136, 0.5);
+    transform: translateY(-1px);
   }
 
   .pitchd-divider {
@@ -74,6 +95,11 @@
     background: var(--pitchd-teal);
     opacity: 0.25;
   }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Film strip loading animation */
