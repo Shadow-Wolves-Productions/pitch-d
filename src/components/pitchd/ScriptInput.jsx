@@ -55,12 +55,12 @@ export default function ScriptInput({ text, setText, onGenerate, loading }) {
         }}
       >
         {loading ? (
-          <div className="flex flex-col items-center justify-center gap-1">
-            <span className="flex items-center justify-center gap-3">
+          <div className="flex flex-col items-center justify-center gap-1 w-full text-center">
+            <span className="flex items-center justify-center gap-3 w-full">
               <span className="film-strip-loader w-16" />
               <span>Working our magic....</span>
             </span>
-            <span className="font-grotesk normal-case" style={{ fontSize: '11px', opacity: 0.7, fontWeight: 400, letterSpacing: 'normal' }}>
+            <span className="font-grotesk normal-case block w-full text-center" style={{ fontSize: '11px', opacity: 0.7, fontWeight: 400, letterSpacing: 'normal' }}>
               Good things come to those who wait... so just wait!
             </span>
           </div>

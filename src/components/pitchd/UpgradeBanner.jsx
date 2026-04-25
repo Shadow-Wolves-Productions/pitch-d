@@ -72,7 +72,7 @@ export default function UpgradeBanner() {
         </div>
 
         <p className="font-mono-dm mt-4" style={{ fontSize: '10px', letterSpacing: '0.08em', color: 'rgba(255,255,255,0.5)' }}>
-          Use code PITCHD25 for 15% off &middot; Includes 7-Day free trial.
+          Use code PITCHD10 for 10% off &middot; Includes 7-Day free trial.
         </p>
       </div>
     </div>
