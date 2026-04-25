@@ -6,25 +6,19 @@
 - AI: OpenAI GPT-4o, dual-mode (script/concept)
 
 ## Implemented
-- Full deployment from GitHub, Anthropic→OpenAI
-- PDF auto-download (jsPDF blob method)
-- All Syne fonts → Bebas Neue
-- OpenAI SDK, dual-mode prompts, json_object response
-- Genre/tone/setting metadata in results + PDF
-- Logo: official PITCH'D brand image
-- 100K truncation with SLATR upgrade banner
-- **Complete copy rewrite**: Direct filmmaker-to-filmmaker tone across all UI
-- Ecosystem promo section (SLATR + SPOT'D cards)
-- Promo modal with PITCHD25 code after PDF export
-- Error states: specific messages for empty input, network, generic errors
+- Full deployment, Anthropic→OpenAI, PDF blob download
+- Bebas Neue fonts, OpenAI SDK dual-mode prompts
+- Genre/tone/setting metadata, 100K truncation + upgrade banner
+- Complete copy rewrite (filmmaker-to-filmmaker tone)
+- Brand logos: PITCH'D, SLATR (black transparent), SPOT'D (black-electric)
+- Ecosystem promo: SLATR + SPOT'D cards with logos
+- PromoModal: SLATR/SPOT'D logos in post-export modal
 
-## Key Files
-- `/app/backend/server.py` - FastAPI + OpenAI SDK
-- `/app/src/pages/Pitchd.jsx` - Main page, error handling, truncation banner
-- `/app/src/components/pitchd/OneSheetBuilder.jsx` - Results + export
-- `/app/src/components/pitchd/CrossPromo.jsx` - EcosystemPromo (SLATR/SPOT'D)
-- `/app/src/components/pitchd/onesheet/PromoModal.jsx` - Post-export modal
+## Logo Assets
+- PITCH'D: https://customer-assets.emergentagent.com/job_pitch-d-preview/artifacts/i1ty4hvl_Pitch%27d%20Logo%20-%20Transparent.png
+- SLATR Black: https://customer-assets.emergentagent.com/job_pitch-d-preview/artifacts/1vct55ke_Slatr_Logo_Black_Transparent.png
+- SLATR Grey: https://customer-assets.emergentagent.com/job_pitch-d-preview/artifacts/7r6s4gn9_Slatr_Logo_Grey_Transparent.png
+- SPOT'D: https://customer-assets.emergentagent.com/job_pitch-d-preview/artifacts/0979arut_Spot%27d%20Logo%20-%20Black-Electric_BIG.png
 
 ## Backlog
 - P2: DNS for pitchd.shadowwolvesproductions.com.au
-- P3: SLATR/SPOT'D logo images when uploaded

@@ -15,6 +15,9 @@ const SLATR_FEATURES_RIGHT = [
   'Comparable films',
 ];
 
+const SLATR_LOGO = 'https://customer-assets.emergentagent.com/job_pitch-d-preview/artifacts/1vct55ke_Slatr_Logo_Black_Transparent.png';
+const SPOTD_LOGO = 'https://customer-assets.emergentagent.com/job_pitch-d-preview/artifacts/0979arut_Spot%27d%20Logo%20-%20Black-Electric_BIG.png';
+
 export default function EcosystemPromo() {
   return (
     <section className="no-print mt-16">
@@ -78,6 +81,7 @@ export default function EcosystemPromo() {
           className="rounded-xl p-6"
           style={{ background: '#ffffff', border: '1px solid #e8e0d8', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}
         >
+          <img src={SPOTD_LOGO} alt="SPOT'D" style={{ height: '28px', width: 'auto', objectFit: 'contain', marginBottom: '12px' }} />
           <span
             className="font-mono-dm uppercase inline-block mb-3"
             style={{ fontSize: '9px', letterSpacing: '0.2em', color: '#6b7280' }}

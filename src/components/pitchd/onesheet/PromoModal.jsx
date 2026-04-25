@@ -64,7 +64,7 @@ export default function PromoModal({ onClose }) {
             style={{ background: '#faf8f5', border: '1px solid #e8e0d8', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}
           >
             <div className="flex items-start justify-between">
-              <span className="font-syne font-extrabold" style={{ fontSize: '16px', color: '#1a1a1a' }}>SLATR</span>
+              <img src="https://customer-assets.emergentagent.com/job_pitch-d-preview/artifacts/1vct55ke_Slatr_Logo_Black_Transparent.png" alt="SLATR" style={{ height: '18px', width: 'auto' }} />
               <ArrowUpRight size={14} style={{ color: '#0d9488' }} />
             </div>
             <span className="font-mono-dm uppercase mt-1" style={{ fontSize: '9px', letterSpacing: '0.1em', color: '#6b7280' }}>
@@ -79,7 +79,7 @@ export default function PromoModal({ onClose }) {
             style={{ background: '#faf8f5', border: '1px solid #e8e0d8', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}
           >
             <div className="flex items-start justify-between">
-              <span className="font-syne font-extrabold" style={{ fontSize: '16px', color: '#1a1a1a' }}>SPOT'D</span>
+              <img src="https://customer-assets.emergentagent.com/job_pitch-d-preview/artifacts/0979arut_Spot%27d%20Logo%20-%20Black-Electric_BIG.png" alt="SPOT'D" style={{ height: '16px', width: 'auto' }} />
               <ArrowUpRight size={14} style={{ color: '#0d9488' }} />
             </div>
             <span className="font-mono-dm uppercase mt-1" style={{ fontSize: '9px', letterSpacing: '0.1em', color: '#6b7280' }}>
