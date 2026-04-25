@@ -73,7 +73,7 @@ export default function EcosystemPromo() {
           <h4 className="font-grotesk" style={{ fontSize: '20px', color: '#1a1a1a', lineHeight: 1.5, letterSpacing: '0.02em', fontWeight: 400 }}>
             Cast &middot; Crew &middot; Companies. No Gatekeepers.
           </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1.5 mt-4">
+          <div className="grid grid-cols-1 gap-y-1.5 mt-4">
             {SPOTD_FEATURES.map((f) => (
               <div key={f} className="flex items-start gap-2">
                 <span style={{ color: '#0d9488', fontSize: '12px', lineHeight: '18px', flexShrink: 0 }}>&#10003;</span>

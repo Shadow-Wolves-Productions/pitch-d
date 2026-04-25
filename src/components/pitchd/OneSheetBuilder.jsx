@@ -131,6 +131,10 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
 
     await new Promise(resolve => setTimeout(resolve, 300));
 
+    // Wait for all Google Fonts to be fully loaded before capture
+    await document.fonts.ready;
+    await new Promise(resolve => setTimeout(resolve, 500));
+
     try {
       const canvas = await window.html2canvas(sheet, {
         scale: 2, useCORS: true, allowTaint: true, backgroundColor: '#ffffff',

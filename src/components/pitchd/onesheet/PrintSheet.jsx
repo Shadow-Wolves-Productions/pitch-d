@@ -10,7 +10,10 @@ const pillStyle = {
   padding: '2px 7px',
   borderRadius: '100px',
   whiteSpace: 'nowrap',
-  display: 'inline-block',
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  textAlign: 'center',
 };
 
 const sectionLabel = {
@@ -63,7 +66,7 @@ export default function PrintSheet({ data, visible }) {
             A Shadow Wolves Productions Tool
           </div>
         </div>
-        <div style={{ fontFamily: "'DM Mono', monospace", fontSize: '7.5px', letterSpacing: '0.15em', textTransform: 'uppercase', border: '1px solid rgba(13,148,136,0.35)', color: '#0d9488', padding: '4px 10px' }}>
+        <div style={{ fontFamily: "'DM Mono', monospace", fontSize: '7.5px', letterSpacing: '0.15em', textTransform: 'uppercase', border: '1px solid rgba(13,148,136,0.35)', color: '#0d9488', padding: '5px 12px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
           Development One Sheet
         </div>
       </div>
