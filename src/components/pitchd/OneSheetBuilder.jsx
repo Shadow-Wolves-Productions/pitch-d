@@ -101,7 +101,7 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
     const formattedAttachments = (notableAttachments || '\u2014')
       .replace(/\b(Director|DOP|Producer|Cast|Composer)\b/g, '<strong style="font-weight:700;">$1</strong>');
 
-    const heroHTML = `<div style="background:#1a1a1a;padding:20px 22px 18px;display:flex;flex-direction:column;justify-content:flex-end;min-height:110px;">
+    const heroHTML = `<div style="background:#1a1a1a;padding:26px 22px 24px;display:flex;flex-direction:column;justify-content:flex-end;min-height:120px;">
         <div style="font-family:'DM Mono',monospace;font-size:7px;text-transform:uppercase;letter-spacing:2px;color:#0d9488;margin-bottom:5px;">A Film Titled</div>
         <div style="font-family:'Bebas Neue',sans-serif;font-size:38px;color:#ffffff;line-height:0.95;letter-spacing:1px;">${primaryTitle.toUpperCase()}</div>
       </div>`;
@@ -120,12 +120,12 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
       <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
       <div style="font-family:'Space Grotesk',sans-serif;background:#ffffff;width:680px;max-width:680px;box-sizing:border-box;border:1px solid #d0ccc6;overflow:hidden;">
         <div style="height:5px;background:#0d9488;"></div>
-        <div style="background:#ffffff;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1.5px solid #0d9488;">
+        <div style="background:#ffffff;padding:10px 20px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1.5px solid #0d9488;">
           <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:#1a1a1a;letter-spacing:2px;line-height:1;">P<span style="color:#0d9488;">¡</span>TCH'D</div>
           <span style="font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:1.5px;color:#6b7280;">Development One Sheet</span>
         </div>
         ${heroHTML}
-        <div style="background:#0d9488;padding:7px 22px;display:flex;gap:28px;">
+        <div style="background:#0d9488;padding:10px 22px;display:flex;gap:28px;">
           ${writerName ? `<div style="display:flex;flex-direction:column;gap:1px;"><span style="font-family:'DM Mono',monospace;font-size:7px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.6);">Written By</span><span style="font-size:10px;color:#ffffff;font-weight:500;">${writerName}</span></div>` : ''}
           ${writerEmail ? `<div style="display:flex;flex-direction:column;gap:1px;"><span style="font-family:'DM Mono',monospace;font-size:7px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.6);">Contact</span><span style="font-size:10px;color:#ffffff;font-weight:500;">${writerEmail}</span></div>` : ''}
           ${writerPhone ? `<div style="display:flex;flex-direction:column;gap:1px;"><span style="font-family:'DM Mono',monospace;font-size:7px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.6);">Phone</span><span style="font-size:10px;color:#ffffff;font-weight:500;">${writerPhone}</span></div>` : ''}
