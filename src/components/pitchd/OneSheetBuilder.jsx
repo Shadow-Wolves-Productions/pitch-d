@@ -162,7 +162,7 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
     ].filter(Boolean).join('');
 
     const sheet = [
-      '<div style="font-family:\'Space Grotesk\',sans-serif;background:#ffffff;width:680px;max-width:680px;box-sizing:border-box;overflow:hidden;">',
+      '<div style="font-family:\'Space Grotesk\',sans-serif;background:#ffffff;width:680px;max-width:680px;box-sizing:border-box;overflow:hidden;display:flex;flex-direction:column;height:100%;">',
       '<div style="height:5px;background:#0d9488;"></div>',
       '<div style="background:#ffffff;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1.5px solid #0d9488;">',
       '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:26px;color:#1a1a1a;letter-spacing:2px;line-height:1;">P<span style="color:#0d9488;">¡</span>TCH\'D</div>',
@@ -175,7 +175,7 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
       '<div style="background:#0d9488;padding:7px 22px;display:flex;gap:28px;">',
       writerItems,
       '</div>',
-      '<div style="display:grid;grid-template-columns:1fr 155px;">',
+      '<div style="display:grid;grid-template-columns:1fr 155px;flex:1;">',
       '<div style="background:#ffffff;padding:14px 22px;">',
       '<div style="margin-bottom:12px;">',
       '<span style="font-family:\'DM Mono\',monospace;font-size:7.5px;text-transform:uppercase;letter-spacing:1.5px;color:#0d9488;display:block;padding-bottom:3px;border-bottom:1px solid rgba(13,148,136,0.2);margin-bottom:4px;">Logline</span>',
@@ -228,7 +228,10 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
     container.style.overflow = 'hidden';
     container.style.boxSizing = 'border-box';
     container.style.zIndex = '-1';
+    // A4 aspect ratio: 210:297 → at 680px width, height = 680 * (297/210) = 962px
+    const a4Height = Math.round(680 * (297 / 210));
     container.innerHTML = sheet;
+    container.style.height = a4Height + 'px';
     document.body.appendChild(container);
     container.getBoundingClientRect(); // forces reflow
     await document.fonts.ready;
@@ -241,13 +244,13 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
         allowTaint: true,
         backgroundColor: '#ffffff',
         width: 680,
-        height: container.scrollHeight,
+        height: a4Height,
         windowWidth: 680,
       });
       const imgData = canvas.toDataURL('image/jpeg', 0.95);
-      const pdfWidth = 210; // A4 width in mm
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [pdfWidth, pdfHeight] });
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
       pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
       const filename = `PITCHD_${(primaryTitle || 'ONE_SHEET').replace(/\s+/g, '_').toUpperCase()}.pdf`;
       pdf.save(filename);
