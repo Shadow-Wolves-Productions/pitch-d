@@ -117,8 +117,8 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
     ];
 
     const html = `
-      <div style="font-family:'Space Grotesk',sans-serif;background:#ffffff;width:680px;border:1px solid #d0ccc6;overflow:hidden;">
-        <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+      <div style="font-family:'Space Grotesk',sans-serif;background:#ffffff;width:680px;max-width:680px;box-sizing:border-box;border:1px solid #d0ccc6;overflow:hidden;">
         <div style="height:5px;background:#0d9488;"></div>
         <div style="background:#ffffff;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1.5px solid #0d9488;">
           <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:#1a1a1a;letter-spacing:2px;line-height:1;">P<span style="color:#0d9488;">¡</span>TCH'D</div>
@@ -186,6 +186,7 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
     container.style.width = '680px';
     container.style.maxWidth = '680px';
     container.style.overflow = 'hidden';
+    container.style.boxSizing = 'border-box';
     container.style.zIndex = '-1';
     container.innerHTML = html;
     document.body.appendChild(container);
