@@ -230,9 +230,9 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
     container.style.zIndex = '-1';
     container.innerHTML = sheet;
     document.body.appendChild(container);
-
+    container.getBoundingClientRect(); // forces reflow
     await document.fonts.ready;
-    await new Promise(r => setTimeout(r, 500));
+    await new Promise(r => setTimeout(r, 1200));
 
     try {
       const canvas = await html2canvas(container, {
@@ -241,6 +241,8 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
         allowTaint: true,
         backgroundColor: '#ffffff',
         width: 680,
+        height: container.scrollHeight,
+        windowWidth: 680,
       });
       const imgData = canvas.toDataURL('image/jpeg', 0.95);
       const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
