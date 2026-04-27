@@ -184,6 +184,8 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
     container.style.top = '-9999px';
     container.style.left = '-9999px';
     container.style.width = '680px';
+    container.style.maxWidth = '680px';
+    container.style.overflow = 'hidden';
     container.style.zIndex = '-1';
     container.innerHTML = html;
     document.body.appendChild(container);
