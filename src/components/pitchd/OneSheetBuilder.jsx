@@ -98,86 +98,126 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
 
     const primaryTitle = editTitle;
     const notableAttachments = buildAttachedString();
+
+    const data = {
+      primaryTitle,
+      loglines: [editLogline],
+      taglines: [editTagline],
+      synopsis: editSynopsis,
+      comparableA: compA,
+      comparableB: compB,
+      genre: genreList,
+      tone,
+      themes: editThemes.split(',').map(t => t.trim()).filter(Boolean),
+      setting: editSetting,
+      period: editPeriod,
+      format: editFormat,
+      estimatedBudget: editBudgetTier,
+      estimatedBudgetRange: editBudgetRange,
+      targetAudience: editTarget,
+      writerName,
+      writerEmail,
+      writerPhone,
+      notableAttachments,
+    };
+
+    const {
+      loglines = [],
+      taglines = [],
+      synopsis = '',
+      comparableA = '',
+      comparableB = '',
+      genre = [],
+      themes = [],
+      setting = '',
+      period = '',
+      format: fmt = '',
+      estimatedBudget = '',
+      estimatedBudgetRange = '',
+      targetAudience = '',
+    } = data;
+
+    const sideItems = [
+      ['Format', fmt],
+      ['Genre', Array.isArray(genre) ? genre.join(' \u00B7 ') : genre],
+      ['Est. Budget', [estimatedBudget, estimatedBudgetRange].filter(Boolean).join(' \u00B7 ')],
+      ['Period', period],
+      ['Setting', setting],
+      ['Tone', tone],
+      ['Themes', Array.isArray(themes) ? themes.join(', ') : themes],
+    ];
+
+    const sideHTML = sideItems.map(([key, val], i, arr) => {
+      const divider = i < arr.length - 1 ? '<div style="height:1px;background:rgba(255,255,255,0.07);"></div>' : '';
+      return `<div style="display:flex;flex-direction:column;gap:3px;"><span style="font-family:'DM Mono',monospace;font-size:7px;text-transform:uppercase;letter-spacing:1.2px;color:#0d9488;">${key}</span><span style="font-size:10px;color:#ffffff;font-weight:400;line-height:1.4;">${val || '\u2014'}</span></div>${divider}`;
+    }).join('');
+
     const formattedAttachments = (notableAttachments || '\u2014')
       .replace(/\b(Director|DOP|Producer|Cast|Composer)\b/g, '<strong style="font-weight:700;">$1</strong>');
 
-    const heroHTML = `<div style="background:#1a1a1a;padding:26px 22px 24px;display:flex;flex-direction:column;justify-content:flex-end;min-height:120px;">
-        <div style="font-family:'DM Mono',monospace;font-size:7px;text-transform:uppercase;letter-spacing:2px;color:#0d9488;margin-bottom:5px;">A Film Titled</div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:38px;color:#ffffff;line-height:0.95;letter-spacing:1px;">${primaryTitle.toUpperCase()}</div>
-      </div>`;
+    const writerItems = [
+      writerName ? `<div style="display:flex;flex-direction:column;gap:1px;"><span style="font-family:'DM Mono',monospace;font-size:7px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.6);">Written By</span><span style="font-size:10px;color:#ffffff;font-weight:500;">${writerName}</span></div>` : '',
+      writerEmail ? `<div style="display:flex;flex-direction:column;gap:1px;"><span style="font-family:'DM Mono',monospace;font-size:7px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.6);">Contact</span><span style="font-size:10px;color:#ffffff;font-weight:500;">${writerEmail}</span></div>` : '',
+      writerPhone ? `<div style="display:flex;flex-direction:column;gap:1px;"><span style="font-family:'DM Mono',monospace;font-size:7px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.6);">Phone</span><span style="font-size:10px;color:#ffffff;font-weight:500;">${writerPhone}</span></div>` : '',
+    ].filter(Boolean).join('');
 
-    const sideItems = [
-      ['Format', editFormat],
-      ['Genre', genreList.join(' \u00B7 ')],
-      ['Est. Budget', [editBudgetTier, editBudgetRange].filter(Boolean).join(' \u00B7 ')],
-      ['Period', editPeriod],
-      ['Setting', editSetting],
-      ['Tone', tone],
-      ['Themes', editThemes],
-    ];
-
-    const html = `
-      <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
-      <div style="font-family:'Space Grotesk',sans-serif;background:#ffffff;width:680px;max-width:680px;box-sizing:border-box;border:1px solid #d0ccc6;overflow:hidden;">
-        <div style="height:5px;background:#0d9488;"></div>
-        <div style="background:#ffffff;padding:10px 20px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1.5px solid #0d9488;">
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:#1a1a1a;letter-spacing:2px;line-height:1;">P<span style="color:#0d9488;">¡</span>TCH'D</div>
-          <span style="font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:1.5px;color:#6b7280;">Development One Sheet</span>
-        </div>
-        ${heroHTML}
-        <div style="background:#0d9488;padding:10px 22px;display:flex;gap:28px;">
-          ${writerName ? `<div style="display:flex;flex-direction:column;gap:1px;"><span style="font-family:'DM Mono',monospace;font-size:7px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.6);">Written By</span><span style="font-size:10px;color:#ffffff;font-weight:500;">${writerName}</span></div>` : ''}
-          ${writerEmail ? `<div style="display:flex;flex-direction:column;gap:1px;"><span style="font-family:'DM Mono',monospace;font-size:7px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.6);">Contact</span><span style="font-size:10px;color:#ffffff;font-weight:500;">${writerEmail}</span></div>` : ''}
-          ${writerPhone ? `<div style="display:flex;flex-direction:column;gap:1px;"><span style="font-family:'DM Mono',monospace;font-size:7px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.6);">Phone</span><span style="font-size:10px;color:#ffffff;font-weight:500;">${writerPhone}</span></div>` : ''}
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 155px;">
-          <div style="background:#ffffff;padding:14px 22px;">
-            <div style="margin-bottom:12px;">
-              <span style="font-family:'DM Mono',monospace;font-size:7.5px;text-transform:uppercase;letter-spacing:1.5px;color:#0d9488;display:block;padding-bottom:3px;border-bottom:1px solid rgba(13,148,136,0.2);margin-bottom:4px;">Logline</span>
-              <p style="font-size:10px;color:#1a1a1a;line-height:1.6;margin:0;">${editLogline}</p>
-            </div>
-            <div style="margin-bottom:12px;">
-              <span style="font-family:'DM Mono',monospace;font-size:7.5px;text-transform:uppercase;letter-spacing:1.5px;color:#0d9488;display:block;padding-bottom:3px;border-bottom:1px solid rgba(13,148,136,0.2);margin-bottom:4px;">Tagline</span>
-              <p style="font-size:11px;color:#0d9488;line-height:1.5;font-style:italic;font-weight:500;margin:0;">"${editTagline}"</p>
-            </div>
-            <div style="margin-bottom:12px;">
-              <span style="font-family:'DM Mono',monospace;font-size:7.5px;text-transform:uppercase;letter-spacing:1.5px;color:#0d9488;display:block;padding-bottom:3px;border-bottom:1px solid rgba(13,148,136,0.2);margin-bottom:4px;">Synopsis</span>
-              <p style="font-size:10px;color:#1a1a1a;line-height:1.6;margin:0;">${editSynopsis}</p>
-            </div>
-            <div style="margin-bottom:12px;">
-              <span style="font-family:'DM Mono',monospace;font-size:7.5px;text-transform:uppercase;letter-spacing:1.5px;color:#0d9488;display:block;padding-bottom:3px;border-bottom:1px solid rgba(13,148,136,0.2);margin-bottom:4px;">Comparables</span>
-              <div style="display:flex;align-items:baseline;flex-wrap:wrap;gap:6px;">
-                <span style="font-family:'DM Mono',monospace;font-style:italic;font-size:10px;color:#6b7280;">It's</span>
-                <span style="font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:#1a1a1a;text-transform:uppercase;letter-spacing:0.5px;">${compA}</span>
-                <span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:1.5px;color:#0d9488;">meets</span>
-                <span style="font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:#1a1a1a;text-transform:uppercase;letter-spacing:0.5px;">${compB}</span>
-              </div>
-            </div>
-            <div style="margin-bottom:12px;">
-              <span style="font-family:'DM Mono',monospace;font-size:7.5px;text-transform:uppercase;letter-spacing:1.5px;color:#0d9488;display:block;padding-bottom:3px;border-bottom:1px solid rgba(13,148,136,0.2);margin-bottom:4px;">Target Audience</span>
-              <p style="font-size:10px;color:#1a1a1a;line-height:1.6;margin:0;">${editTarget}</p>
-            </div>
-            <div style="margin-bottom:4px;">
-              <span style="font-family:'DM Mono',monospace;font-size:7.5px;text-transform:uppercase;letter-spacing:1.5px;color:#0d9488;display:block;padding-bottom:3px;border-bottom:1px solid rgba(13,148,136,0.2);margin-bottom:4px;">Notable Attachments</span>
-              <p style="font-size:10px;color:#1a1a1a;line-height:1.7;margin:0;">${formattedAttachments}</p>
-            </div>
-          </div>
-          <div style="background:#1a1a1a;padding:14px;display:flex;flex-direction:column;gap:10px;border-left:3px solid #0d9488;">
-            ${sideItems.map(([key, val], i, arr) => `
-              <div style="display:flex;flex-direction:column;gap:3px;">
-                <span style="font-family:'DM Mono',monospace;font-size:7px;text-transform:uppercase;letter-spacing:1.2px;color:#0d9488;">${key}</span>
-                <span style="font-size:10px;color:#ffffff;font-weight:400;line-height:1.4;">${val || '\u2014'}</span>
-              </div>
-              ${i < arr.length - 1 ? '<div style="height:1px;background:rgba(255,255,255,0.07);"></div>' : ''}
-            `).join('')}
-          </div>
-        </div>
-        <div style="height:3px;background:#0d9488;"></div>
-        <div style="background:#1a1a1a;padding:6px 22px;display:flex;justify-content:space-between;align-items:center;">
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;color:#9ca3af;letter-spacing:2px;">P<span style="color:#0d9488;">¡</span>TCH'D</div>
-          <div style="font-family:'DM Mono',monospace;font-size:6.5px;color:#6b7280;text-transform:uppercase;letter-spacing:0.8px;">PITCH'D &copy; Shadow Wolves Productions</div>
-        </div>
-      </div>`;
+    const sheet = [
+      '<div style="font-family:\'Space Grotesk\',sans-serif;background:#ffffff;width:680px;max-width:680px;box-sizing:border-box;overflow:hidden;">',
+      '<div style="height:5px;background:#0d9488;"></div>',
+      '<div style="background:#ffffff;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1.5px solid #0d9488;">',
+      '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:26px;color:#1a1a1a;letter-spacing:2px;line-height:1;">P<span style="color:#0d9488;">¡</span>TCH\'D</div>',
+      '<span style="font-family:\'DM Mono\',monospace;font-size:8px;text-transform:uppercase;letter-spacing:1.5px;color:#6b7280;">Development One Sheet</span>',
+      '</div>',
+      '<div style="background:#1a1a1a;padding:20px 22px 18px;display:flex;flex-direction:column;justify-content:flex-end;min-height:110px;">',
+      '<div style="font-family:\'DM Mono\',monospace;font-size:7px;text-transform:uppercase;letter-spacing:2px;color:#0d9488;margin-bottom:5px;">A Film Titled</div>',
+      `<div style="font-family:'Bebas Neue',sans-serif;font-size:38px;color:#ffffff;line-height:0.95;letter-spacing:1px;">${primaryTitle.toUpperCase()}</div>`,
+      '</div>',
+      '<div style="background:#0d9488;padding:7px 22px;display:flex;gap:28px;">',
+      writerItems,
+      '</div>',
+      '<div style="display:grid;grid-template-columns:1fr 155px;">',
+      '<div style="background:#ffffff;padding:14px 22px;">',
+      '<div style="margin-bottom:12px;">',
+      '<span style="font-family:\'DM Mono\',monospace;font-size:7.5px;text-transform:uppercase;letter-spacing:1.5px;color:#0d9488;display:block;padding-bottom:3px;border-bottom:1px solid rgba(13,148,136,0.2);margin-bottom:4px;">Logline</span>',
+      `<p style="font-size:10px;color:#1a1a1a;line-height:1.6;margin:0;">${loglines[0] || ''}</p>`,
+      '</div>',
+      '<div style="margin-bottom:12px;">',
+      '<span style="font-family:\'DM Mono\',monospace;font-size:7.5px;text-transform:uppercase;letter-spacing:1.5px;color:#0d9488;display:block;padding-bottom:3px;border-bottom:1px solid rgba(13,148,136,0.2);margin-bottom:4px;">Tagline</span>',
+      `<p style="font-size:11px;color:#0d9488;line-height:1.5;font-style:italic;font-weight:500;margin:0;">"${taglines[0] || ''}"</p>`,
+      '</div>',
+      '<div style="margin-bottom:12px;">',
+      '<span style="font-family:\'DM Mono\',monospace;font-size:7.5px;text-transform:uppercase;letter-spacing:1.5px;color:#0d9488;display:block;padding-bottom:3px;border-bottom:1px solid rgba(13,148,136,0.2);margin-bottom:4px;">Synopsis</span>',
+      `<p style="font-size:10px;color:#1a1a1a;line-height:1.6;margin:0;">${synopsis}</p>`,
+      '</div>',
+      '<div style="margin-bottom:12px;">',
+      '<span style="font-family:\'DM Mono\',monospace;font-size:7.5px;text-transform:uppercase;letter-spacing:1.5px;color:#0d9488;display:block;padding-bottom:3px;border-bottom:1px solid rgba(13,148,136,0.2);margin-bottom:4px;">Comparables</span>',
+      '<div style="display:flex;align-items:baseline;flex-wrap:wrap;gap:6px;">',
+      '<span style="font-family:\'DM Mono\',monospace;font-style:italic;font-size:10px;color:#6b7280;">It\'s</span>',
+      `<span style="font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:#1a1a1a;text-transform:uppercase;letter-spacing:0.5px;">${comparableA}</span>`,
+      '<span style="font-family:\'DM Mono\',monospace;font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:1.5px;color:#0d9488;">meets</span>',
+      `<span style="font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:#1a1a1a;text-transform:uppercase;letter-spacing:0.5px;">${comparableB}</span>`,
+      '</div>',
+      '</div>',
+      '<div style="margin-bottom:12px;">',
+      '<span style="font-family:\'DM Mono\',monospace;font-size:7.5px;text-transform:uppercase;letter-spacing:1.5px;color:#0d9488;display:block;padding-bottom:3px;border-bottom:1px solid rgba(13,148,136,0.2);margin-bottom:4px;">Target Audience</span>',
+      `<p style="font-size:10px;color:#1a1a1a;line-height:1.6;margin:0;">${targetAudience}</p>`,
+      '</div>',
+      '<div style="margin-bottom:4px;">',
+      '<span style="font-family:\'DM Mono\',monospace;font-size:7.5px;text-transform:uppercase;letter-spacing:1.5px;color:#0d9488;display:block;padding-bottom:3px;border-bottom:1px solid rgba(13,148,136,0.2);margin-bottom:4px;">Notable Attachments</span>',
+      `<p style="font-size:10px;color:#1a1a1a;line-height:1.7;margin:0;">${formattedAttachments}</p>`,
+      '</div>',
+      '</div>',
+      '<div style="background:#1a1a1a;padding:14px;display:flex;flex-direction:column;gap:10px;border-left:3px solid #0d9488;">',
+      sideHTML,
+      '</div>',
+      '</div>',
+      '<div style="height:3px;background:#0d9488;"></div>',
+      '<div style="background:#1a1a1a;padding:6px 22px;display:flex;justify-content:space-between;align-items:center;">',
+      '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:13px;color:#9ca3af;letter-spacing:2px;">P<span style="color:#0d9488;">¡</span>TCH\'D</div>',
+      '<div style="font-family:\'DM Mono\',monospace;font-size:6.5px;color:#6b7280;text-transform:uppercase;letter-spacing:0.8px;">PITCH\'D \u00A9 Shadow Wolves Productions</div>',
+      '</div>',
+      '</div>',
+    ].join('');
 
     const container = document.createElement('div');
     container.style.position = 'fixed';
@@ -188,7 +228,7 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
     container.style.overflow = 'hidden';
     container.style.boxSizing = 'border-box';
     container.style.zIndex = '-1';
-    container.innerHTML = html;
+    container.innerHTML = sheet;
     document.body.appendChild(container);
 
     await document.fonts.ready;
@@ -196,7 +236,11 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
 
     try {
       const canvas = await html2canvas(container, {
-        scale: 2, useCORS: true, allowTaint: true, backgroundColor: '#ffffff',
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        width: 680,
       });
       const imgData = canvas.toDataURL('image/jpeg', 0.95);
       const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
@@ -205,8 +249,6 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
       pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
       const filename = `PITCHD_${(primaryTitle || 'ONE_SHEET').replace(/\s+/g, '_').toUpperCase()}.pdf`;
       pdf.save(filename);
-    } catch (err) {
-      console.error('PDF export failed:', err);
     } finally {
       document.body.removeChild(container);
       setExporting(false);
