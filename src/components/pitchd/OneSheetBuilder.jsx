@@ -109,14 +109,14 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
     const notableAttachments = buildAttachedString();
 
     const heroHTML = heroImage
-      ? `<div style="background:#1a1a1a;display:grid;grid-template-columns:1fr 220px;min-height:160px;overflow:hidden;">
+      ? `<div style="background:#1a1a1a;display:grid;grid-template-columns:1fr 220px;height:155px;overflow:hidden;">
           <div style="background:#1a1a1a;padding:20px 22px;display:flex;flex-direction:column;justify-content:center;">
             <div style="font-family:'DM Mono',monospace;font-size:7px;text-transform:uppercase;letter-spacing:2px;color:#0d9488;margin-bottom:5px;">A Film Titled</div>
             <div style="font-family:'Bebas Neue',sans-serif;font-size:38px;color:#ffffff;line-height:0.95;letter-spacing:1px;">${primaryTitle.toUpperCase()}</div>
           </div>
-          <div style="position:relative;overflow:hidden;">
-            <img src="${heroImage}" style="width:100%;height:100%;object-fit:cover;object-position:60% center;display:block;"/>
-            <div style="position:absolute;inset:0;background:linear-gradient(to right,#1a1a1a 0%,transparent 30%),linear-gradient(to left,#1a1a1a 0%,transparent 30%),linear-gradient(to bottom,#1a1a1a 0%,transparent 25%),linear-gradient(to top,#1a1a1a 0%,transparent 25%);z-index:1;"></div>
+          <div style="position:relative;overflow:hidden;height:155px;">
+            <img src="${heroImage}" style="width:100%;height:100%;object-fit:cover;object-position:center center;display:block;"/>
+            <div style="position:absolute;inset:0;background:linear-gradient(to right,#1a1a1a 0%,rgba(26,26,26,0.8) 15%,transparent 45%),linear-gradient(to left,#1a1a1a 0%,transparent 25%),linear-gradient(to bottom,#1a1a1a 0%,transparent 30%),linear-gradient(to top,#1a1a1a 0%,transparent 30%);z-index:1;pointer-events:none;"></div>
           </div>
         </div>`
       : `<div style="background:#1a1a1a;padding:24px 22px;min-height:100px;display:flex;flex-direction:column;justify-content:center;">
