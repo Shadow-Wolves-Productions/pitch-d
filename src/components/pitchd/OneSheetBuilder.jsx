@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { RotateCcw, Lock, Download, Unlock, CheckCircle, ChevronRight, Plus, X, Image } from 'lucide-react';
+import { RotateCcw, Lock, Download, Unlock, CheckCircle, ChevronRight, Plus, X } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import SelectableCard from './onesheet/SelectableCard';
@@ -72,7 +72,6 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
   // Structured attachments
   const [crewAttach, setCrewAttach] = useState({ Director: '', Composer: '', DOP: '', Producer: '' });
   const [castList, setCastList] = useState(initAttached ? [initAttached] : ['']);
-  const [heroImage, setHeroImage] = useState(null);
 
   const [exporting, setExporting] = useState(false);
 
@@ -94,36 +93,18 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
 
   const budgetRangeOptions = BUDGET_RANGES[editBudgetTier] || [];
 
-  const handleHeroUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => setHeroImage(ev.target.result);
-    reader.readAsDataURL(file);
-  };
-
   const handleExport = async () => {
     setExporting(true);
 
     const primaryTitle = editTitle;
     const notableAttachments = buildAttachedString();
+    const formattedAttachments = (notableAttachments || '\u2014')
+      .replace(/\b(Director|DOP|Producer|Cast|Composer)\b/g, '<strong style="font-weight:700;">$1</strong>');
 
-    const heroHTML = heroImage
-      ? `<div style="background:#1a1a1a;display:grid;grid-template-columns:1fr 200px;height:120px;overflow:hidden;">
-          <div style="padding:18px 22px;display:flex;flex-direction:column;justify-content:flex-end;">
-            <div style="font-family:'DM Mono',monospace;font-size:7px;text-transform:uppercase;letter-spacing:2px;color:#0d9488;margin-bottom:5px;">A Film Titled</div>
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:38px;color:#ffffff;line-height:0.95;letter-spacing:1px;">${primaryTitle.toUpperCase()}</div>
-          </div>
-          <div style="display:flex;align-items:center;justify-content:center;padding:10px 12px 10px 0;">
-            <div style="width:100%;height:100%;border:2px solid rgba(13,148,136,0.6);box-shadow:0 4px 24px rgba(0,0,0,0.5),0 1px 6px rgba(0,0,0,0.4),inset 0 0 0 1px rgba(255,255,255,0.05);overflow:hidden;position:relative;">
-              <img src="${heroImage}" style="width:100%;height:100%;object-fit:cover;object-position:center center;display:block;"/>
-            </div>
-          </div>
-        </div>`
-      : `<div style="background:#1a1a1a;padding:20px 22px 18px;display:flex;flex-direction:column;justify-content:flex-end;min-height:110px;">
-          <div style="font-family:'DM Mono',monospace;font-size:7px;text-transform:uppercase;letter-spacing:2px;color:#0d9488;margin-bottom:5px;">A Film Titled</div>
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:38px;color:#ffffff;line-height:0.95;letter-spacing:1px;">${primaryTitle.toUpperCase()}</div>
-        </div>`;
+    const heroHTML = `<div style="background:#1a1a1a;padding:20px 22px 18px;display:flex;flex-direction:column;justify-content:flex-end;min-height:110px;">
+        <div style="font-family:'DM Mono',monospace;font-size:7px;text-transform:uppercase;letter-spacing:2px;color:#0d9488;margin-bottom:5px;">A Film Titled</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:38px;color:#ffffff;line-height:0.95;letter-spacing:1px;">${primaryTitle.toUpperCase()}</div>
+      </div>`;
 
     const sideItems = [
       ['Format', editFormat],
@@ -178,7 +159,7 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
             </div>
             <div style="margin-bottom:4px;">
               <span style="font-family:'DM Mono',monospace;font-size:7.5px;text-transform:uppercase;letter-spacing:1.5px;color:#0d9488;display:block;padding-bottom:3px;border-bottom:1px solid rgba(13,148,136,0.2);margin-bottom:4px;">Notable Attachments</span>
-              <p style="font-size:11px;color:#1a1a1a;line-height:1.6;margin:0;font-weight:700;">${notableAttachments || '\u2014'}</p>
+              <p style="font-size:10px;color:#1a1a1a;line-height:1.7;margin:0;">${formattedAttachments}</p>
             </div>
           </div>
           <div style="background:#1a1a1a;padding:14px;display:flex;flex-direction:column;gap:10px;border-left:3px solid #0d9488;">
@@ -192,9 +173,9 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
           </div>
         </div>
         <div style="height:3px;background:#0d9488;"></div>
-        <div style="background:#ffffff;padding:6px 22px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #e8e0d8;">
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:12px;color:#9ca3af;letter-spacing:2px;">P<span style="color:#0d9488;">¡</span>TCH'D</div>
-          <div style="font-family:'DM Mono',monospace;font-size:6px;color:#9ca3af;text-transform:uppercase;letter-spacing:0.8px;">PITCH'D &copy; Shadow Wolves Productions</div>
+        <div style="background:#1a1a1a;padding:6px 22px;display:flex;justify-content:space-between;align-items:center;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:13px;color:#9ca3af;letter-spacing:2px;">P<span style="color:#0d9488;">¡</span>TCH'D</div>
+          <div style="font-family:'DM Mono',monospace;font-size:6.5px;color:#6b7280;text-transform:uppercase;letter-spacing:0.8px;">PITCH'D &copy; Shadow Wolves Productions</div>
         </div>
       </div>`;
 
@@ -371,27 +352,6 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
                   <Plus size={12} /> Add Cast
                 </button>
               </div>
-            </div>
-
-            {/* Hero Image Upload */}
-            <div>
-              <label className="font-mono-dm uppercase block mb-1.5" style={{ fontSize: '9px', letterSpacing: '0.15em', color: '#0d9488' }}>
-                Hero Image <span style={{ color: '#9ca3af', textTransform: 'none', letterSpacing: 'normal' }}>(optional)</span>
-              </label>
-              {heroImage ? (
-                <div className="flex items-center gap-3">
-                  <img src={heroImage} alt="Hero" style={{ width: '60px', height: '40px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #e8e0d8' }} />
-                  <button onClick={() => setHeroImage(null)} className="font-mono-dm uppercase flex items-center gap-1 px-2 py-1 rounded transition-colors hover:bg-red-50" style={{ fontSize: '10px', letterSpacing: '0.08em', color: '#9ca3af', border: '1px solid #e8e0d8' }}>
-                    <X size={12} /> Remove
-                  </button>
-                </div>
-              ) : (
-                <label className="flex items-center gap-2 px-4 py-2.5 rounded-lg cursor-pointer transition-all hover:bg-gray-50" style={{ ...inputStyle, cursor: 'pointer' }}>
-                  <Image size={16} style={{ color: '#9ca3af' }} />
-                  <span style={{ color: '#9ca3af' }}>Choose image...</span>
-                  <input type="file" accept="image/*" onChange={handleHeroUpload} className="hidden" />
-                </label>
-              )}
             </div>
 
             <button onClick={handleExport} disabled={exporting} data-testid="export-btn"
