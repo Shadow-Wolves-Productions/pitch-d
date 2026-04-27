@@ -109,29 +109,30 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
     const notableAttachments = buildAttachedString();
 
     const heroHTML = heroImage
-      ? `<div style="background:#1a1a1a;display:grid;grid-template-columns:1fr 220px;height:155px;overflow:hidden;">
-          <div style="background:#1a1a1a;padding:20px 22px;display:flex;flex-direction:column;justify-content:center;">
+      ? `<div style="background:#1a1a1a;display:grid;grid-template-columns:1fr 200px;height:120px;overflow:hidden;">
+          <div style="padding:18px 22px;display:flex;flex-direction:column;justify-content:flex-end;">
             <div style="font-family:'DM Mono',monospace;font-size:7px;text-transform:uppercase;letter-spacing:2px;color:#0d9488;margin-bottom:5px;">A Film Titled</div>
             <div style="font-family:'Bebas Neue',sans-serif;font-size:38px;color:#ffffff;line-height:0.95;letter-spacing:1px;">${primaryTitle.toUpperCase()}</div>
           </div>
-          <div style="position:relative;overflow:hidden;height:155px;">
-            <img src="${heroImage}" style="width:100%;height:100%;object-fit:cover;object-position:center center;display:block;"/>
-            <div style="position:absolute;inset:0;background:linear-gradient(to right,#1a1a1a 0%,rgba(26,26,26,0.8) 15%,transparent 45%),linear-gradient(to left,#1a1a1a 0%,transparent 25%),linear-gradient(to bottom,#1a1a1a 0%,transparent 30%),linear-gradient(to top,#1a1a1a 0%,transparent 30%);z-index:1;pointer-events:none;"></div>
+          <div style="display:flex;align-items:center;justify-content:center;padding:10px 12px 10px 0;">
+            <div style="width:100%;height:100%;border:2px solid rgba(13,148,136,0.6);box-shadow:0 4px 24px rgba(0,0,0,0.5),0 1px 6px rgba(0,0,0,0.4),inset 0 0 0 1px rgba(255,255,255,0.05);overflow:hidden;position:relative;">
+              <img src="${heroImage}" style="width:100%;height:100%;object-fit:cover;object-position:center center;display:block;"/>
+            </div>
           </div>
         </div>`
-      : `<div style="background:#1a1a1a;padding:24px 22px;min-height:100px;display:flex;flex-direction:column;justify-content:center;">
+      : `<div style="background:#1a1a1a;padding:20px 22px 18px;display:flex;flex-direction:column;justify-content:flex-end;min-height:110px;">
           <div style="font-family:'DM Mono',monospace;font-size:7px;text-transform:uppercase;letter-spacing:2px;color:#0d9488;margin-bottom:5px;">A Film Titled</div>
           <div style="font-family:'Bebas Neue',sans-serif;font-size:38px;color:#ffffff;line-height:0.95;letter-spacing:1px;">${primaryTitle.toUpperCase()}</div>
         </div>`;
 
     const sideItems = [
       ['Format', editFormat],
-      ['Genre', genreList.join(' · ')],
-      ['Est. Budget', [editBudgetTier, editBudgetRange].filter(Boolean).join(' · ')],
+      ['Genre', genreList.join(' \u00B7 ')],
+      ['Est. Budget', [editBudgetTier, editBudgetRange].filter(Boolean).join(' \u00B7 ')],
       ['Period', editPeriod],
+      ['Setting', editSetting],
       ['Tone', tone],
       ['Themes', editThemes],
-      ['Setting', editSetting],
     ];
 
     const html = `
@@ -177,7 +178,7 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
             </div>
             <div style="margin-bottom:4px;">
               <span style="font-family:'DM Mono',monospace;font-size:7.5px;text-transform:uppercase;letter-spacing:1.5px;color:#0d9488;display:block;padding-bottom:3px;border-bottom:1px solid rgba(13,148,136,0.2);margin-bottom:4px;">Notable Attachments</span>
-              <p style="font-size:10px;color:#1a1a1a;line-height:1.6;margin:0;">${notableAttachments || '\u2014'}</p>
+              <p style="font-size:11px;color:#1a1a1a;line-height:1.6;margin:0;font-weight:700;">${notableAttachments || '\u2014'}</p>
             </div>
           </div>
           <div style="background:#1a1a1a;padding:14px;display:flex;flex-direction:column;gap:10px;border-left:3px solid #0d9488;">
@@ -191,9 +192,9 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
           </div>
         </div>
         <div style="height:3px;background:#0d9488;"></div>
-        <div style="background:#ffffff;padding:8px 22px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #e8e0d8;">
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:14px;color:#9ca3af;letter-spacing:2px;">P<span style="color:#0d9488;">¡</span>TCH'D</div>
-          <div style="font-family:'DM Mono',monospace;font-size:7px;color:#9ca3af;text-transform:uppercase;letter-spacing:0.8px;">PITCH'D &copy; Shadow Wolves Productions</div>
+        <div style="background:#ffffff;padding:6px 22px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #e8e0d8;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:12px;color:#9ca3af;letter-spacing:2px;">P<span style="color:#0d9488;">¡</span>TCH'D</div>
+          <div style="font-family:'DM Mono',monospace;font-size:6px;color:#9ca3af;text-transform:uppercase;letter-spacing:0.8px;">PITCH'D &copy; Shadow Wolves Productions</div>
         </div>
       </div>`;
 
