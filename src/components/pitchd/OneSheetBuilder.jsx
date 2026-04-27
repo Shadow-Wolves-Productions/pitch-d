@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { RotateCcw, Lock, Download, Unlock, CheckCircle, ChevronRight, Plus, X } from 'lucide-react';
+import { RotateCcw, Lock, Download, Unlock, CheckCircle, ChevronRight, Plus, X, Image } from 'lucide-react';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 import SelectableCard from './onesheet/SelectableCard';
-import PrintSheet from './onesheet/PrintSheet';
 import SectionLabel from './SectionLabel';
 import UpgradeBanner from './UpgradeBanner';
 
@@ -71,8 +72,8 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
   // Structured attachments
   const [crewAttach, setCrewAttach] = useState({ Director: '', Composer: '', DOP: '', Producer: '' });
   const [castList, setCastList] = useState(initAttached ? [initAttached] : ['']);
+  const [heroImage, setHeroImage] = useState(null);
 
-  const [showPrintSheet, setShowPrintSheet] = useState(false);
   const [exporting, setExporting] = useState(false);
 
   const completed = [selectedTitle !== null, selectedLogline !== null, selectedTagline !== null, editSynopsis.trim().length > 0];
@@ -93,67 +94,136 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
 
   const budgetRangeOptions = BUDGET_RANGES[editBudgetTier] || [];
 
-  const oneSheetData = {
-    writerName, writerPhone, writerEmail,
-    title: editTitle, logline: editLogline, tagline: editTagline, synopsis: editSynopsis,
-    comparableA: compA, comparableB: compB,
-    genres: genreList, tone, themes: editThemes.split(',').map(t => t.trim()).filter(Boolean),
-    setting: editSetting, period: editPeriod, format: editFormat,
-    estimatedBudget: editBudgetTier, estimatedBudgetRange: editBudgetRange,
-    targetAudience: editTarget, attachedTalent: buildAttachedString(),
+  const handleHeroUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => setHeroImage(ev.target.result);
+    reader.readAsDataURL(file);
   };
-
-  const loadScript = (src) => new Promise((resolve, reject) => {
-    if (document.querySelector(`script[src="${src}"]`)) return resolve();
-    const s = document.createElement('script');
-    s.src = src;
-    s.onload = resolve;
-    s.onerror = reject;
-    document.head.appendChild(s);
-  });
 
   const handleExport = async () => {
     setExporting(true);
-    setShowPrintSheet(true);
 
-    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
-    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+    const primaryTitle = editTitle;
+    const notableAttachments = buildAttachedString();
 
-    const sheet = document.getElementById('printSheet');
-    sheet.style.display = 'flex';
-    sheet.style.position = 'fixed';
-    sheet.style.top = '0';
-    sheet.style.left = '0';
-    sheet.style.width = '794px';
-    sheet.style.height = '1123px';
-    sheet.style.zIndex = '99999';
-    sheet.style.background = '#ffffff';
-    sheet.style.overflow = 'hidden';
+    const heroHTML = heroImage
+      ? `<div style="background:#1a1a1a;display:grid;grid-template-columns:1fr 220px;min-height:160px;overflow:hidden;">
+          <div style="background:#1a1a1a;padding:20px 22px;display:flex;flex-direction:column;justify-content:center;">
+            <div style="font-family:'DM Mono',monospace;font-size:7px;text-transform:uppercase;letter-spacing:2px;color:#0d9488;margin-bottom:5px;">A Film Titled</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:38px;color:#ffffff;line-height:0.95;letter-spacing:1px;">${primaryTitle.toUpperCase()}</div>
+          </div>
+          <div style="position:relative;overflow:hidden;">
+            <img src="${heroImage}" style="width:100%;height:100%;object-fit:cover;object-position:60% center;display:block;"/>
+            <div style="position:absolute;inset:0;background:linear-gradient(to right,#1a1a1a 0%,transparent 30%),linear-gradient(to left,#1a1a1a 0%,transparent 30%),linear-gradient(to bottom,#1a1a1a 0%,transparent 25%),linear-gradient(to top,#1a1a1a 0%,transparent 25%);z-index:1;"></div>
+          </div>
+        </div>`
+      : `<div style="background:#1a1a1a;padding:24px 22px;min-height:100px;display:flex;flex-direction:column;justify-content:center;">
+          <div style="font-family:'DM Mono',monospace;font-size:7px;text-transform:uppercase;letter-spacing:2px;color:#0d9488;margin-bottom:5px;">A Film Titled</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:38px;color:#ffffff;line-height:0.95;letter-spacing:1px;">${primaryTitle.toUpperCase()}</div>
+        </div>`;
 
-    await new Promise(resolve => setTimeout(resolve, 300));
+    const sideItems = [
+      ['Format', editFormat],
+      ['Genre', genreList.join(' · ')],
+      ['Est. Budget', [editBudgetTier, editBudgetRange].filter(Boolean).join(' · ')],
+      ['Period', editPeriod],
+      ['Tone', tone],
+      ['Themes', editThemes],
+      ['Setting', editSetting],
+    ];
 
-    // Wait for all Google Fonts to be fully loaded before capture
+    const html = `
+      <div style="font-family:'Space Grotesk',sans-serif;background:#ffffff;width:680px;border:1px solid #d0ccc6;overflow:hidden;">
+        <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+        <div style="height:5px;background:#0d9488;"></div>
+        <div style="background:#ffffff;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1.5px solid #0d9488;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:#1a1a1a;letter-spacing:2px;line-height:1;">P<span style="color:#0d9488;">¡</span>TCH'D</div>
+          <span style="font-family:'DM Mono',monospace;font-size:8px;text-transform:uppercase;letter-spacing:1.5px;color:#6b7280;">Development One Sheet</span>
+        </div>
+        ${heroHTML}
+        <div style="background:#0d9488;padding:7px 22px;display:flex;gap:28px;">
+          ${writerName ? `<div style="display:flex;flex-direction:column;gap:1px;"><span style="font-family:'DM Mono',monospace;font-size:7px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.6);">Written By</span><span style="font-size:10px;color:#ffffff;font-weight:500;">${writerName}</span></div>` : ''}
+          ${writerEmail ? `<div style="display:flex;flex-direction:column;gap:1px;"><span style="font-family:'DM Mono',monospace;font-size:7px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.6);">Contact</span><span style="font-size:10px;color:#ffffff;font-weight:500;">${writerEmail}</span></div>` : ''}
+          ${writerPhone ? `<div style="display:flex;flex-direction:column;gap:1px;"><span style="font-family:'DM Mono',monospace;font-size:7px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.6);">Phone</span><span style="font-size:10px;color:#ffffff;font-weight:500;">${writerPhone}</span></div>` : ''}
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 155px;">
+          <div style="background:#ffffff;padding:14px 22px;">
+            <div style="margin-bottom:12px;">
+              <span style="font-family:'DM Mono',monospace;font-size:7.5px;text-transform:uppercase;letter-spacing:1.5px;color:#0d9488;display:block;padding-bottom:3px;border-bottom:1px solid rgba(13,148,136,0.2);margin-bottom:4px;">Logline</span>
+              <p style="font-size:10px;color:#1a1a1a;line-height:1.6;margin:0;">${editLogline}</p>
+            </div>
+            <div style="margin-bottom:12px;">
+              <span style="font-family:'DM Mono',monospace;font-size:7.5px;text-transform:uppercase;letter-spacing:1.5px;color:#0d9488;display:block;padding-bottom:3px;border-bottom:1px solid rgba(13,148,136,0.2);margin-bottom:4px;">Tagline</span>
+              <p style="font-size:11px;color:#0d9488;line-height:1.5;font-style:italic;font-weight:500;margin:0;">"${editTagline}"</p>
+            </div>
+            <div style="margin-bottom:12px;">
+              <span style="font-family:'DM Mono',monospace;font-size:7.5px;text-transform:uppercase;letter-spacing:1.5px;color:#0d9488;display:block;padding-bottom:3px;border-bottom:1px solid rgba(13,148,136,0.2);margin-bottom:4px;">Synopsis</span>
+              <p style="font-size:10px;color:#1a1a1a;line-height:1.6;margin:0;">${editSynopsis}</p>
+            </div>
+            <div style="margin-bottom:12px;">
+              <span style="font-family:'DM Mono',monospace;font-size:7.5px;text-transform:uppercase;letter-spacing:1.5px;color:#0d9488;display:block;padding-bottom:3px;border-bottom:1px solid rgba(13,148,136,0.2);margin-bottom:4px;">Comparables</span>
+              <div style="display:flex;align-items:baseline;flex-wrap:wrap;gap:6px;">
+                <span style="font-family:'DM Mono',monospace;font-style:italic;font-size:10px;color:#6b7280;">It's</span>
+                <span style="font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:#1a1a1a;text-transform:uppercase;letter-spacing:0.5px;">${compA}</span>
+                <span style="font-family:'DM Mono',monospace;font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:1.5px;color:#0d9488;">meets</span>
+                <span style="font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;color:#1a1a1a;text-transform:uppercase;letter-spacing:0.5px;">${compB}</span>
+              </div>
+            </div>
+            <div style="margin-bottom:12px;">
+              <span style="font-family:'DM Mono',monospace;font-size:7.5px;text-transform:uppercase;letter-spacing:1.5px;color:#0d9488;display:block;padding-bottom:3px;border-bottom:1px solid rgba(13,148,136,0.2);margin-bottom:4px;">Target Audience</span>
+              <p style="font-size:10px;color:#1a1a1a;line-height:1.6;margin:0;">${editTarget}</p>
+            </div>
+            <div style="margin-bottom:4px;">
+              <span style="font-family:'DM Mono',monospace;font-size:7.5px;text-transform:uppercase;letter-spacing:1.5px;color:#0d9488;display:block;padding-bottom:3px;border-bottom:1px solid rgba(13,148,136,0.2);margin-bottom:4px;">Notable Attachments</span>
+              <p style="font-size:10px;color:#1a1a1a;line-height:1.6;margin:0;">${notableAttachments || '\u2014'}</p>
+            </div>
+          </div>
+          <div style="background:#1a1a1a;padding:14px;display:flex;flex-direction:column;gap:10px;border-left:3px solid #0d9488;">
+            ${sideItems.map(([key, val], i, arr) => `
+              <div style="display:flex;flex-direction:column;gap:3px;">
+                <span style="font-family:'DM Mono',monospace;font-size:7px;text-transform:uppercase;letter-spacing:1.2px;color:#0d9488;">${key}</span>
+                <span style="font-size:10px;color:#ffffff;font-weight:400;line-height:1.4;">${val || '\u2014'}</span>
+              </div>
+              ${i < arr.length - 1 ? '<div style="height:1px;background:rgba(255,255,255,0.07);"></div>' : ''}
+            `).join('')}
+          </div>
+        </div>
+        <div style="height:3px;background:#0d9488;"></div>
+        <div style="background:#ffffff;padding:8px 22px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #e8e0d8;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:14px;color:#9ca3af;letter-spacing:2px;">P<span style="color:#0d9488;">¡</span>TCH'D</div>
+          <div style="font-family:'DM Mono',monospace;font-size:7px;color:#9ca3af;text-transform:uppercase;letter-spacing:0.8px;">PITCH'D &copy; Shadow Wolves Productions</div>
+        </div>
+      </div>`;
+
+    const container = document.createElement('div');
+    container.style.position = 'fixed';
+    container.style.top = '-9999px';
+    container.style.left = '-9999px';
+    container.style.width = '680px';
+    container.style.zIndex = '-1';
+    container.innerHTML = html;
+    document.body.appendChild(container);
+
     await document.fonts.ready;
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(r => setTimeout(r, 500));
 
     try {
-      const canvas = await window.html2canvas(sheet, {
+      const canvas = await html2canvas(container, {
         scale: 2, useCORS: true, allowTaint: true, backgroundColor: '#ffffff',
-        width: 794, height: 1123, windowWidth: 794, windowHeight: 1123,
       });
-
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
       const imgData = canvas.toDataURL('image/jpeg', 0.95);
-      pdf.addImage(imgData, 'JPEG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
-
-      const filename = `PITCHD_${(oneSheetData.title || 'OneSheet').replace(/[^a-zA-Z0-9 ]/g, '').replace(/\s+/g, '_')}.pdf`;
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+      const filename = `PITCHD_${(primaryTitle || 'ONE_SHEET').replace(/\s+/g, '_').toUpperCase()}.pdf`;
       pdf.save(filename);
     } catch (err) {
       console.error('PDF export failed:', err);
     } finally {
-      sheet.style.display = 'none';
-      setShowPrintSheet(false);
+      document.body.removeChild(container);
       setExporting(false);
       if (onExportDone) onExportDone();
     }
@@ -161,8 +231,6 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
 
   return (
     <>
-      <PrintSheet data={oneSheetData} visible={showPrintSheet} />
-
       <div className="no-print space-y-10">
         <div className="flex items-center justify-between gap-3">
           <div>
@@ -302,6 +370,27 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
                   <Plus size={12} /> Add Cast
                 </button>
               </div>
+            </div>
+
+            {/* Hero Image Upload */}
+            <div>
+              <label className="font-mono-dm uppercase block mb-1.5" style={{ fontSize: '9px', letterSpacing: '0.15em', color: '#0d9488' }}>
+                Hero Image <span style={{ color: '#9ca3af', textTransform: 'none', letterSpacing: 'normal' }}>(optional)</span>
+              </label>
+              {heroImage ? (
+                <div className="flex items-center gap-3">
+                  <img src={heroImage} alt="Hero" style={{ width: '60px', height: '40px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #e8e0d8' }} />
+                  <button onClick={() => setHeroImage(null)} className="font-mono-dm uppercase flex items-center gap-1 px-2 py-1 rounded transition-colors hover:bg-red-50" style={{ fontSize: '10px', letterSpacing: '0.08em', color: '#9ca3af', border: '1px solid #e8e0d8' }}>
+                    <X size={12} /> Remove
+                  </button>
+                </div>
+              ) : (
+                <label className="flex items-center gap-2 px-4 py-2.5 rounded-lg cursor-pointer transition-all hover:bg-gray-50" style={{ ...inputStyle, cursor: 'pointer' }}>
+                  <Image size={16} style={{ color: '#9ca3af' }} />
+                  <span style={{ color: '#9ca3af' }}>Choose image...</span>
+                  <input type="file" accept="image/*" onChange={handleHeroUpload} className="hidden" />
+                </label>
+              )}
             </div>
 
             <button onClick={handleExport} disabled={exporting} data-testid="export-btn"
