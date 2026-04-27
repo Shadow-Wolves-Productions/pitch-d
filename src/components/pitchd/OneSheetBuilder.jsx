@@ -245,9 +245,9 @@ export default function OneSheetBuilder({ data, onReset, writerName, writerPhone
         windowWidth: 680,
       });
       const imgData = canvas.toDataURL('image/jpeg', 0.95);
-      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfWidth = 210; // A4 width in mm
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [pdfWidth, pdfHeight] });
       pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
       const filename = `PITCHD_${(primaryTitle || 'ONE_SHEET').replace(/\s+/g, '_').toUpperCase()}.pdf`;
       pdf.save(filename);
