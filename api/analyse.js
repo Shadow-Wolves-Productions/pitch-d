@@ -94,7 +94,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { script_text, writer_name, writer_email, writer_phone, notable_attachments, analysis_type } = req.body;
+    const { script_text: _st, text, writer_name, writer_email, writer_phone, notable_attachments, analysis_type } = req.body;
+    const script_text = _st || text;
 
     if (!script_text) {
       return res.status(400).json({ error: 'script_text is required' });
