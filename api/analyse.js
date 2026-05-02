@@ -2,73 +2,20 @@
 // Vercel serverless function — replaces backend/server.py
 // Receives script text, runs Dr. Scrypto AI analysis via OpenAI, returns JSON
 
-const SCRIPT_SYSTEM_PROMPT = `You are Dr. Scrypto, a professional script analyst and film development consultant. You are surgical, precise, and blunt. You read scripts with commercial intelligence and industry accuracy.
+const SYSTEM_PROMPT = `You are a professional film development consultant with 20 years of major studio experience. You read scripts with precision and commercial intelligence. Your job is to strip a story to its most potent, marketable core.
 
-RULES:
-- Analyse ONLY what is on the page. Never invent or assume.
-- Be specific. Reference actual characters, names, themes, and moments.
-- Use correct screenplay terminology.
-- If the script is horror, call it horror. If the tone is dark, say dark.
-- No generic language. No "shadows loom" or "silence reigns" or "malevolent force".
-- No poetic language. No trailer copy. Clear, direct, professional.
-- Return valid JSON only. No preamble, no explanation outside the JSON.
+CRITICAL - before generating anything, read the entire script and extract: every character name exactly as written, every relationship exactly as written, the specific genre and tone, the specific inciting incident, the actual stakes. NEVER invent or assume anything not on the page.
 
-STEP 1 - EXTRACT before generating anything:
-- Every character name EXACTLY as written
-- Every relationship EXACTLY as written
-- Every location EXACTLY as written
-- Every major plot point in sequence
-- The actual tone and genre from the writing style
+TITLES: Must feel like they belong on a festival slate or distributor one sheet. Specific to this story. Avoid: The Watcher, Echoes in the Night, The Shadow, What Lies Within, The Darkness - these are placeholders not titles.
 
-STEP 2 - Generate your analysis using ONLY what you extracted.
+LOGLINES (3): Follow this exactly - When [specific inciting incident using real character names from the script], [protagonist name and specific flaw or circumstance] must [clear concrete objective] before [specific stakes or deadline]. Omit "In a world". Use real names. Be specific.
 
-Return this exact JSON structure:
-{
-  "title": "string or null",
-  "genre": "string",
-  "tone": "string",
-  "logline": "string (one sentence, no fluff)",
-  "synopsis": "string (2-3 sentences max)",
-  "characters": [
-    {
-      "name": "string",
-      "role": "string",
-      "description": "string (1-2 sentences, specific)"
-    }
-  ],
-  "themes": ["string"],
-  "strengths": ["string (specific, not generic)"],
-  "weaknesses": ["string (specific, not generic)"],
-  "commercial_viability": "string",
-  "comparable_titles": ["string"],
-  "verdict": "string (2-3 sentences, blunt)"
-}`;
+TAGLINES (3): Under 10 words. Punchy, specific, poster-worthy. Banned: "or perish", "face your fears", "not all monsters", "silence is deadly", "will they survive", "in the dark". Think: what would a Sundance programmer put on the festival poster.
 
-const CONCEPT_SYSTEM_PROMPT = `You are Dr. Scrypto, a professional script analyst and film development consultant. You are surgical, precise, and blunt.
+SYNOPSIS: 3-4 sentences. Active voice. Present tense. Name actual characters. Reads like a pitch document a development exec would forward to their boss. No flowery language. No passive constructions.
 
-The user has provided a concept, treatment, or idea rather than a full script. Analyse it as a development executive would.
-
-RULES:
-- Be specific to what they've provided. No generic advice.
-- Use correct film development terminology.
-- No poetic language. No trailer copy. Clear, direct, professional.
-- Return valid JSON only. No preamble, no explanation outside the JSON.
-
-Return this exact JSON structure:
-{
-  "concept_type": "string (e.g. logline, treatment, outline, idea)",
-  "genre": "string",
-  "tone": "string",
-  "logline": "string (one sentence)",
-  "premise_strength": "string",
-  "originality": "string",
-  "commercial_viability": "string",
-  "development_notes": ["string (specific actionable notes)"],
-  "comparable_titles": ["string"],
-  "verdict": "string (2-3 sentences, blunt)"
-}`;
-
-const RANDOMISE_INSTRUCTION = `Analyse this script and return your analysis in the exact JSON format specified. Be surgical and specific.`;
+Return only valid JSON, no markdown:
+{"primaryTitle":"string","altTitles":["string","string","string"],"loglines":["string","string","string"],"taglines":["string","string","string"],"synopsis":"string"};`
 
 export const config = {
   maxDuration: 60,
@@ -101,9 +48,6 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'script_text is required' });
     }
 
-    const isConceptOnly = analysis_type === 'concept' || script_text.length < 500;
-    const systemPrompt = isConceptOnly ? CONCEPT_SYSTEM_PROMPT : SCRIPT_SYSTEM_PROMPT;
-
     const userContent = [
       writer_name && `Writer: ${writer_name}`,
       writer_email && `Email: ${writer_email}`,
@@ -121,10 +65,10 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: 'gpt-4o',
         messages: [
-          { role: 'system', content: systemPrompt },
+          { role: 'system', content: SYSTEM_PROMPT },
           { role: 'user', content: userContent },
         ],
-        temperature: 0.3,
+        temperature: 0.7,
         response_format: { type: 'json_object' },
       }),
     });
