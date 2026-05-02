@@ -1,45 +1,120 @@
-// api/analyse.js
-// Vercel serverless function — replaces backend/server.py
+// api/analyse.js — Vercel serverless function replacing backend/server.py
 
-const SYSTEM_PROMPT = `You are a professional film development consultant with 20 years of major studio experience. You read scripts with precision and commercial intelligence. Your job is to strip a story to its most potent, marketable core.
+const SCRIPT_SYSTEM_PROMPT = `You are Dr. Scrypto, a professional script analyst and film development consultant. You are surgical, precise, and blunt. You read scripts with commercial intelligence and industry accuracy.
 
-CRITICAL - before generating anything, read the entire script and extract: every character name exactly as written, every relationship exactly as written, the specific genre and tone, the specific inciting incident, the actual stakes. NEVER invent or assume anything not on the page.
+RULES:
+- Analyse ONLY what is on the page. Never invent or assume.
+- Be specific. Reference actual characters, names, themes, and moments.
+- Use correct screenplay terminology.
+- If the script is horror, call it horror. If the tone is dark, say dark.
+- No generic language. No "shadows loom" or "silence reigns" or "malevolent force".
+- No poetic language. No trailer copy. Clear, direct, professional.
+- Return valid JSON only. No preamble, no explanation outside the JSON.
 
-TITLES: Must feel like they belong on a festival slate or distributor one sheet. Specific to this story. Avoid generic titles like: The Watcher, Echoes in the Night, The Shadow, What Lies Within, The Darkness.
+STEP 1 — EXTRACT before generating anything:
+- Every character name EXACTLY as written
+- Every relationship EXACTLY as written
+- The specific genre(s)
+- The specific tone in 3-4 words
+- The inciting incident
+- The actual stakes
+- The primary setting and time period
+- 1-3 core themes as single words or short phrases
+- Two comparable films this resembles in tone, genre, or concept
+- The most likely format (Feature Film, Short Film, TV Series, Mini-Series, Documentary)
+- Estimated budget tier based on locations, cast size, and production requirements
+- Target audience — specific, demographic, platform-aware
 
-LOGLINES (3): Follow this exactly - When [specific inciting incident using real character names from the script], [protagonist name and specific flaw or circumstance] must [clear concrete objective] before [specific stakes or deadline]. Omit "In a world". Use real names. Be specific.
+STEP 2 — GENERATE using ONLY what you extracted. Never invent character names or plot details.
 
-TAGLINES (3): Under 10 words. Punchy, specific, poster-worthy. Banned phrases: "or perish", "face your fears", "not all monsters", "silence is deadly", "will they survive", "in the dark". Think: what would a Sundance programmer put on the festival poster.
+TITLES:
+- primaryTitle: best festival-worthy title for this specific story
+- altTitles: three alternatives, equally specific, not generic
 
-SYNOPSIS: Maximum 110 words. Active voice. Present tense. Name actual characters. Reads like a pitch document a development exec would forward to their boss. No flowery language. No passive constructions.
+LOGLINES (3):
+- One sentence each, max 40 words
+- Format: When [specific inciting incident + real character name], [protagonist + specific flaw] must [concrete objective] before [specific stakes]
+- Three genuinely different angles: commercial, character-driven, thematic
+- Banned: malevolent, lurking, sinister, mysterious, haunting, unseen force, growing darkness
 
-COMPARABLES: Two real produced films in "Film A meets Film B" format. Must be actual released titles that share tone, genre, and commercial positioning with this script. Be specific and accurate.
+TAGLINES (3):
+- Under 10 words each
+- Festival poster quality
+- Banned: "or perish", "face your fears", "not all monsters", "silence is deadly", "will they survive"
 
-THEMES: 3-5 core thematic ideas present in the script. Single phrases, no sentences.
+SYNOPSIS:
+- 3-4 sentences, active voice, present tense
+- Name actual characters and relationships
+- Setup, conflict, escalating stakes — no spoilers
+- No passive constructions, no flowery language
 
-SETTING: The primary location(s) where the story takes place. Specific, not generic.
-
-PERIOD: The time period of the story (e.g. "Contemporary", "1970s", "Near-future 2035", etc.)
-
-TARGET AUDIENCE: Maximum 40 words. Who will watch this film. Be specific about demographics, psychographics, and comparable audience crossover.
-
-Return only valid JSON, no markdown:
+Return ONLY this exact JSON structure, nothing else:
 {
   "primaryTitle": "string",
   "altTitles": ["string", "string", "string"],
   "loglines": ["string", "string", "string"],
   "taglines": ["string", "string", "string"],
-  "synopsis": "string (max 110 words)",
-  "comparables": "string (Film A meets Film B)",
-  "themes": ["string", "string", "string"],
-  "setting": "string",
-  "period": "string",
-  "targetAudience": "string (max 40 words)"
+  "synopsis": "string",
+  "genre": ["string", "string"],
+  "tone": "string — max 4 words e.g. dark and visceral",
+  "themes": ["string", "string"],
+  "setting": "string — 5 words or less",
+  "period": "string — e.g. Present Day, 1980s",
+  "format": "string — Feature Film / Short Film / TV Series / Mini-Series / Documentary",
+  "estimatedBudget": "string — tier only e.g. Low-Mid",
+  "estimatedBudgetRange": "string — e.g. $500K-$2M AUD",
+  "comparableA": "string — first comparable film title only",
+  "comparableB": "string — second comparable film title only",
+  "targetAudience": "string — 50-80 words, specific demographics, platform fit, comparable audience"
 }`;
 
-export const config = {
-  maxDuration: 60,
-};
+const CONCEPT_SYSTEM_PROMPT = `You are a development executive helping a filmmaker shape their idea into a pitchable concept.
+You are collaborative, constructive, and specific.
+You generate professional industry-standard pitch materials from a rough idea or concept — not a finished screenplay.
+Extrapolate intelligently — fill gaps creatively but stay true to the filmmaker's stated idea.
+Return valid JSON only. No preamble, no explanation outside the JSON.`;
+
+const RANDOMISE_INSTRUCTION = `\n\nGenerate fresh, creative options. Do not repeat titles or phrases from previous responses. Vary your approach each time.`;
+
+function buildScriptUserPrompt(scriptText) {
+  return `Based on this screenplay, generate pitch materials. Generate THREE options for title, logline, and tagline so the filmmaker can choose.
+
+SCRIPT TEXT:
+${scriptText}
+
+Return the JSON structure as specified in your instructions.${RANDOMISE_INSTRUCTION}`;
+}
+
+function buildConceptUserPrompt(userIdea) {
+  return `A filmmaker has the following idea for a film:
+
+CONCEPT:
+${userIdea}
+
+Generate professional pitch materials. Generate THREE options for title, logline, and tagline.
+
+Return JSON with this exact structure:
+{
+  "primaryTitle": "string",
+  "altTitles": ["string", "string", "string"],
+  "loglines": ["string", "string", "string"],
+  "taglines": ["string", "string", "string"],
+  "synopsis": "string — 300-400 words pitch synopsis",
+  "genre": ["string", "string"],
+  "tone": "string — max 4 words",
+  "themes": ["string", "string"],
+  "setting": "string — 5 words or less",
+  "period": "string",
+  "format": "string — Feature Film / Short Film / TV Series / Mini-Series / Documentary",
+  "estimatedBudget": "string — tier e.g. Low-Mid",
+  "estimatedBudgetRange": "string — e.g. $500K-$2M AUD",
+  "comparableA": "string — comparable film title",
+  "comparableB": "string — comparable film title",
+  "targetAudience": "string — 50-80 words, specific demographics"
+}${RANDOMISE_INSTRUCTION}`;
+}
+
+export const config = { maxDuration: 60 };
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -53,18 +128,17 @@ export default async function handler(req, res) {
   if (!apiKey) return res.status(500).json({ error: 'OpenAI API key not configured' });
 
   try {
-    const { script_text: _st, text, writer_name, writer_email, writer_phone, notable_attachments } = req.body;
-    const script_text = _st || text;
+    const { text } = req.body;
 
-    if (!script_text) return res.status(400).json({ error: 'script_text is required' });
+    if (!text?.trim()) {
+      return res.status(400).json({ error: { message: 'No text provided' } });
+    }
 
-    const userContent = [
-      writer_name && `Writer: ${writer_name}`,
-      writer_email && `Email: ${writer_email}`,
-      writer_phone && `Phone: ${writer_phone}`,
-      notable_attachments && `Notable Attachments: ${notable_attachments}`,
-      `\n---\n${script_text}`,
-    ].filter(Boolean).join('\n');
+    const isScript = text.length >= 1000;
+    const systemPrompt = isScript ? SCRIPT_SYSTEM_PROMPT : CONCEPT_SYSTEM_PROMPT;
+    const userPrompt = isScript
+      ? buildScriptUserPrompt(text.slice(0, 100000))
+      : buildConceptUserPrompt(text);
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -74,30 +148,31 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'gpt-4o',
-        messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
-          { role: 'user', content: userContent },
-        ],
-        temperature: 0.7,
         response_format: { type: 'json_object' },
+        max_tokens: 3000,
+        temperature: 0.7,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt },
+        ],
       }),
     });
 
     if (!response.ok) {
       const err = await response.text();
       console.error('OpenAI error:', err);
-      return res.status(502).json({ error: 'OpenAI request failed', details: err });
+      return res.status(502).json({ error: { message: 'OpenAI request failed' } });
     }
 
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content;
-    if (!content) return res.status(502).json({ error: 'No response from OpenAI' });
+    if (!content) return res.status(502).json({ error: { message: 'No response from OpenAI' } });
 
-    const analysis = JSON.parse(content);
-    return res.status(200).json(analysis);
+    const result = JSON.parse(content);
+    return res.status(200).json(result);
 
   } catch (err) {
     console.error('Analysis error:', err);
-    return res.status(500).json({ error: 'Analysis failed', message: err.message });
+    return res.status(500).json({ error: { message: err.message } });
   }
 }
